@@ -6,7 +6,19 @@
 - Support t.Literal["foo"] and t.Union[t.Literal["foo", "bar"]] and enum.Enum for Choices with mm.validate.OneOf and click.Choice()
 - Use namespaces in the metadata=
 - How to set up env prefix and filenames for multireader? `MultiReader(readers=EnvReader(prefix='WEIRDPREFIX_'), name='normal')` and then have a method setting the prefix if there isn't one already set?
+
+#+BEGIN_SRC python
+def Loader.inherit(self, key, value):
+    if key not in self.inherits:
+        return attr.evolve(self)
+    if getattr(self, key) is None:
+        return attr.evolve(**{key, value})
+    return attr.evolve(self)
+#+END_SRC
+
+
 - Should the readers be here or should they be externally provided?
 - Maybe provide an interface for readers
 - Provide writers so you can see what config is necessary for each filetype
 - Maybe readers and writers should be the same object
+- Set default metadata keys for each loader
