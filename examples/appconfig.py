@@ -1,4 +1,5 @@
 import attr
+import click
 
 import desert
 
@@ -7,18 +8,20 @@ import desert
 # export MYAPP_DB_PORT=10101
 
 
-@desert.type
+@attr.dataclass
 class DatabaseSpec:
     host: str
     port: int
 
 
-@desert.type
+@attr.dataclass
 class AppConfig:
     db: DatabaseSpec
     debug: bool
     verbose: bool = attr.ib(
-        metadata={"desert": {"cli": {"help": "Whether the output should be verbose."}}}
+        metadata={
+            "desert": {"cli": click.Option(["--verbose", "-v"], help="Verbose output?")}
+        }
     )
 
 
@@ -29,7 +32,7 @@ assert config.db.port == 10101
 
 
 config = (
-    desert.MultiReader(
+    desert.loaders.MultiReader(
         name="foo",
         readers=[
             desert.loaders.CLI(metadata_key="cli"),
