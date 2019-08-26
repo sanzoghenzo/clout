@@ -17,9 +17,34 @@ def register_type(typ):
     return register_function
 
 
+class Debug:
+    def __repr__(self):
+        pairs = ", ".join(
+            (
+                f"{k}={v}"
+                for k, v in vars(self).items()
+                if not k.startswith("_") and not callable(v)
+            )
+        )
+        name = type(self).__name__
+        return f"{name}({pairs})"
+
+
+class Option(Debug, click.Option):
+    pass
+
+
+class Group(Debug, click.Group):
+    pass
+
+
+class Command(Debug, click.Command):
+    pass
+
+
 @register_type(bool)
 def _(typ, metadata, default):
-    return click.Option("--" + metadata["field_name"], is_flag=True, default=default)
+    return Option(["--" + metadata["field_name"]], is_flag=True, default=default)
 
 
 @register_type(int)
@@ -27,7 +52,7 @@ def _(typ, metadata, default):
 @register_type(str)
 @register_type(bool)
 def __(typ, metadata, default):
-    return click.Option("--" + metadata["field_name"], type=typ, default=default)
+    return Option(["--" + metadata["field_name"]], type=typ, default=default)
 
 
 @attr.dataclass(frozen=True)
@@ -47,8 +72,27 @@ class CLI:
         if cli_metadata is not None and not isinstance(cli_metadata, dict):
             return cli_metadata
 
-        if typ in native_to_click:
-            return native_to_click[typ](typ, metadata, default)
+        for candidate_type in native_to_click.keys():
+            # TODO use a better linearization algorithm.
+            if issubclass(typ, candidate_type):
+                return native_to_click[candidate_type](typ, metadata, default)
+
+        if attr.has(typ):
+            group = Group(name=metadata["name"])
+            for hint, attr_field in zip(
+                t.get_type_hints(typ).values(), attr.fields(typ)
+            ):
+                field = self.make_field(
+                    typ=hint,
+                    metadata=dict(attr_field.metadata, field_name=attr_field.name),
+                    default=attr_field.default,
+                )
+                if attr.has(hint):
+                    group.commands.append(field)
+                else:
+                    group.params.append(field)
+
+            return group
 
         if isinstance(cli_metadata, dict):
             raise NotImplementedError("Dict isn't supported at this time.")
