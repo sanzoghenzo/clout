@@ -22,3 +22,4 @@ def Loader.inherit(self, key, value):
 - Provide writers so you can see what config is necessary for each filetype
 - Maybe readers and writers should be the same object
 - Set default metadata keys for each loader
+- Allow overriding the @type metadata with its container's field metadata?
