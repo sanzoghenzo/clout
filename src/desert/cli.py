@@ -18,6 +18,7 @@ import click
 
 from desert import app
 
+
 @click.command()
 def cli(**kwargs):
     app.main(**kwargs)
