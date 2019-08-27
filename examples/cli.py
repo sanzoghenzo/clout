@@ -1,8 +1,10 @@
 import typing as t
 
+import click
 import dataclasses
 
 import desert.loaders.click
+import desert.loaders.clout
 
 
 @dataclasses.dataclass
@@ -29,8 +31,10 @@ class Person:
 
 
 cli = desert.loaders.click.CLI().make_field(typ=Person, metadata={"name": "cfg"})
-print(cli)
 
-result = cli()
+parser = desert.loaders.clout.Parser(cli, callback=cli.callback)
 
+
+line = "cfg --name Alice dog coat --color brown cat --claws long"
+result = parser.invoke_string(line)
 print(result)

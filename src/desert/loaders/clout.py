@@ -1,6 +1,7 @@
 import collections
 import functools
 import math
+import subprocess
 import typing as t
 
 import attr
@@ -74,7 +75,9 @@ def _(arg: click.Argument):
 
 def min_params(cmd: click.BaseCommand) -> int:
     return sum(
-        1 if p.nargs == -1 or p.multiple else p.nargs for p in cmd.params if p.required
+        1 if p.nargs == -1 or p.multiple else p.nargs
+        for p in cmd.params
+        if p.required or not p.default
     )
 
 
@@ -84,7 +87,7 @@ def max_params(cmd: click.BaseCommand) -> t.Union[int, float]:
 
 @to_lark.register
 def _(cmd: CountingCommand):
-    optionals = [name_rule(p) for p in cmd.params if not p.required]
+    optionals = [name_rule(p) for p in cmd.params if not p.required or p.default]
     requireds = [name_rule(p) for p in cmd.params if p.required]
     params = one_of(optionals + requireds)
 
@@ -165,6 +168,7 @@ class Walker(lark.Visitor):
                     not param_or_cmd.multiple
                     and param_or_cmd.nargs != -1
                     and observed != param_or_cmd.nargs
+                    and not (not param_or_cmd.required and observed == 0)
                 ):
                     raise InvalidInput(param_or_cmd, observed)
 
@@ -241,6 +245,7 @@ class Transformer(lark.Transformer):
 @attr.dataclass
 class Parser:
     group: CountingGroup
+    callback: t.Callable = lambda **kw: kw
     _id_to_object: t.Dict[str, object] = attr.ib(factory=dict)
 
     def __attrs_post_init__(self):
@@ -251,11 +256,19 @@ class Parser:
 
     def parse_string(self, s):
         grammar = build_grammar(self.group)
-        print(grammar)
+
         parser = lark.Lark(grammar)
         tree = parser.parse(s)
-        Walker(group=grp).visit(tree)
-        return tree
+        Walker(group=self.group).visit(tree)
+        _group, value = Transformer(group=self.group).transform(tree)
+        return value
+
+    def parse_list(self, args: t.List[str]):
+        line = subprocess.list2cmdline(args)
+        return self.parse_string(line)
+
+    def invoke_string(self, line: str):
+        return self.callback(self.parse_string(line))
 
 
 if __name__ == "__main__":
@@ -266,7 +279,7 @@ if __name__ == "__main__":
             params=[
                 click.Option(["--dog-name"]),
                 click.Option(["--dog-color"], multiple=True),
-                click.Option(["--age"], type=int),
+                click.Option(["--age"], type=int, default=9),
             ],
             callback=lambda **kw: kw,
             nargs=-1,
@@ -292,10 +305,6 @@ if __name__ == "__main__":
     )
 
     tree = Parser(grp).parse_string(
-        "top dog --dog-name fido --dog-color brown --dog-color black --age 21 cat --cat-name felix owner --owner-name Alice dog --dog-name spot --dog-color white --age 3"
+        "top dog --dog-name fido --dog-color brown --dog-color black --age 21 cat --cat-name felix owner --owner-name Alice dog --dog-name spot --dog-color white "
     )
-    print(tree.pretty())
-
-    out = Transformer(group=grp).transform(tree)
-    callback, value = out
-    print(value)
+    print(tree)
