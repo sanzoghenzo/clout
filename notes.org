@@ -23,3 +23,4 @@ def Loader.inherit(self, key, value):
 - Maybe readers and writers should be the same object
 - Set default metadata keys for each loader
 - Allow overriding the @type metadata with its container's field metadata?
+- The CLI should be built from the marshmallow schema so it can validate

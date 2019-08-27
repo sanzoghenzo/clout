@@ -9,7 +9,8 @@ readme = "README.rst"
 python = "^3.7"
 click = "7.0"
 attrs = "19.1.0"
-
+typing-inspect = "^0.4.0"
+black = {version = "^18.3-alpha.0", allows-prereleases = true}
 
 [tool.poetry.dev-dependencies]
 bump2version = "^0.5.10"
@@ -46,12 +47,6 @@ docs = [
 
 [tool.poetry.scripts]
 mario = "desert.cli:cli"
-
-
-[build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
-
 
 
 [tool.towncrier]
@@ -101,3 +96,6 @@ exclude = '''
   | dist
 )/
 '''
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
