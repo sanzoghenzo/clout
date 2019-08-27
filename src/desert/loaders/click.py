@@ -1,9 +1,13 @@
+import functools
 import typing as t
 
 import attr
 import black
 import click
+import marshmallow
 import typing_inspect
+
+from . import mmdc
 
 
 NO_DEFAULT = "__NO_DEFAULT__"
@@ -83,10 +87,90 @@ def __(typ, metadata, default):
     )
 
 
+class MarshmallowFieldParam(click.ParamType):
+    def __init__(self, field):
+        self.field = field
+
+    @property
+    def name(self):
+        return type(self.field).__name__.split(".")[-1]
+
+    def convert(self, value, param, ctx):
+
+        try:
+            return self.field.deserialize(value)
+        except marshmallow.exceptions.ValidationError as e:
+            raise click.BadParameter(ctx=ctx, param=param) from e
+
+
+MM_TO_CLICK = {
+    marshmallow.fields.String: click.STRING,
+    marshmallow.fields.Int: click.INT,
+    marshmallow.fields.Float: click.FLOAT,
+    marshmallow.fields.Raw: click.STRING,
+}
+
+
 @attr.dataclass(frozen=True)
 class CLI:
     inherits: t.FrozenSet[str] = attr.ib(default=frozenset())
     metadata_key: str = "cli"
+
+    @functools.singledispatch
+    def make_param_from_field(self, field: marshmallow.fields.Field) -> click.Parameter:
+        return click.Option(
+            ["--" + field.name],
+            type=MarshmallowFieldParam(field),
+            required=field.missing == marshmallow.missing,
+        )
+
+    @make_param_from_field.register
+    def _(self, field: marshmallow.fields.Boolean) -> Option:
+
+        return Option(
+            ["--" + field.name],
+            default=field.default,
+            required=field.missing == marshmallow.missing,
+            is_flag=True,
+        )
+
+    @make_param_from_field.register(marshmallow.fields.String)
+    @make_param_from_field.register(marshmallow.fields.Int)
+    @make_param_from_field.register(marshmallow.fields.Float)
+    @make_param_from_field.register(marshmallow.fields.Date)
+    @make_param_from_field.register(marshmallow.fields.DateTime)
+    @make_param_from_field.register(marshmallow.fields.Raw)
+    def _(self, field) -> Option:
+        param_type = MM_TO_CLICK[type(field)]
+        return Option(["--" + field.name], type=param_type)
+
+    def make_command_from_schema(
+        self, schema: marshmallow.Schema, name: str
+    ) -> click.BaseCommand:
+        params = []
+        commands = []
+        # import pudb; pudb.set_trace()
+        for field in schema.fields.values():
+
+            if isinstance(field, marshmallow.fields.Nested):
+                commands.append(
+                    self.make_command_from_schema(field.schema, name=field.name)
+                )
+            elif isinstance(field, marshmallow.fields.Field):
+                params.append(self.make_param_from_field(field))
+            else:
+                raise TypeError(field)
+
+        print("commands:", commands)
+        if commands:
+            return Group(
+                name=name,
+                commands={c.name: c for c in commands},
+                params=params,
+                chain=True,
+                result_callback=lambda *a, **kw: (a, kw),
+            )
+        return Command(name=name, params=params, callback=identity)
 
     def make_field(
         self, typ: t.Type, default=NO_DEFAULT, metadata: t.Mapping[str, t.Any] = None
@@ -96,96 +180,12 @@ class CLI:
         cli_metadata: t.Union[
             t.Dict[str, t.Any], click.BaseCommand, click.Parameter
         ] = metadata.get(self.metadata_key, None)
-
-        if cli_metadata is not None and not isinstance(cli_metadata, dict):
-            return cli_metadata
-
-        cli_metadata = cli_metadata.copy() if cli_metadata else {}
-
-        origin = typing_inspect.get_origin(typ)
-        if origin:
-
-            arguments = typing_inspect.get_args(typ, True)
-
-            if origin in (list, t.List):
-                cli_metadata["multiple"] = True
-                return self.make_field(
-                    typ=arguments[0],
-                    metadata=dict(metadata, **{self.metadata_key: cli_metadata}),
-                    default=default,
-                )
-            elif origin in (tuple, t.Tuple):
-                cli_metadata["nargs"] = len(arguments)
-                raise NotImplementedError("tuple not supported")
-                return marshmallow.fields.Tuple(
-                    tuple(field_for_schema(arg) for arg in arguments), **metadata
-                )
-            elif origin in (dict, t.Dict):
-                raise NotImplementedError("dict not supported")
-                return marshmallow.fields.Dict(
-                    keys=field_for_schema(arguments[0]),
-                    values=field_for_schema(arguments[1]),
-                    **metadata,
-                )
-            elif typing_inspect.is_optional_type(typ):
-                [subtyp] = (t for t in arguments if t is not NoneType)
-                # Treat optional types as types with a None default
-                metadata["default"] = metadata.get("default", None)
-                metadata["missing"] = metadata.get("missing", None)
-                metadata["required"] = False
-                return self.make_field(
-                    subtyp,
-                    default=metadata["default"] or default,
-                    metadata=dict(metadata, **{self.metadata_key: cli_metadata}),
-                )
-                return field_for_schema(subtyp, metadata=metadata)
-            elif typing_inspect.is_union_type(typ):
-                raise NotImplementedError("Union")
-                subfields = [
-                    field_for_schema(subtyp, metadata=metadata) for subtyp in arguments
-                ]
-
-                import marshmallow_union
-
-                return marshmallow_union.Union(subfields, **metadata)
-
-        for candidate_type in native_to_click.keys():
-            # TODO use a better linearization algorithm.
-            if issubclass(typ, candidate_type):
-                return native_to_click[candidate_type](typ, metadata, default)
-
-        if attr.has(typ):
-
-            params = []
-            subcommands = []
-            for hint, attr_field in zip(
-                t.get_type_hints(typ).values(), attr.fields(typ)
-            ):
-                field = self.make_field(
-                    typ=hint,
-                    metadata=dict(attr_field.metadata, field_name=attr_field.name),
-                    default=attr_field.default,
-                )
-                if attr.has(hint):
-                    subcommands.append(field)
-                else:
-                    params.append(field)
-
-            name = metadata.get("name", metadata.get("field_name"))
-            if subcommands:
-                return Group(
-                    name=name,
-                    commands={c.name: c for c in subcommands},
-                    params=params,
-                    chain=True,
-                    result_callback=identity,
-                )
-            return Command(name=name, params=params, callback=identity)
-
-        if isinstance(cli_metadata, dict):
-            raise NotImplementedError("Dict isn't supported at this time.")
-
-        raise TypeError("Unexpected type", type(metadata), "of", metadata)
+        if isinstance(cli_metadata, (click.BaseCommand, click.Parameter)):
+            command = cli_metadata
+        else:
+            schema = mmdc.class_schema(typ)()
+            command = self.make_command_from_schema(schema, name=metadata["name"])
+        return command
 
 
 def identity(*args, **kw):
