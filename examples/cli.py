@@ -6,14 +6,25 @@ import desert.loaders.click
 
 
 @dataclasses.dataclass
-class Dog:
+class Coat:
     color: str
+
+
+@dataclasses.dataclass
+class Dog:
+    coat: Coat
+
+
+@dataclasses.dataclass
+class Cat:
+    claws: str
 
 
 @dataclasses.dataclass
 class Person:
     name: str
-    pet: Dog
+    dog: Dog
+    cat: Cat
     age: t.Optional[int] = 21
 
 
