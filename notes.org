@@ -24,3 +24,4 @@ def Loader.inherit(self, key, value):
 - Set default metadata keys for each loader
 - Allow overriding the @type metadata with its container's field metadata?
 - The CLI should be built from the marshmallow schema so it can validate
+- Get a desert snake logo
