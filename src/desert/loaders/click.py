@@ -7,6 +7,7 @@ import click
 import marshmallow
 import typing_inspect
 
+from . import clout
 from . import mmdc
 
 
@@ -32,14 +33,21 @@ def is_python_syntax(s: str) -> bool:
     return True
 
 
+def pythonify(obj):
+    if is_python_syntax(repr(obj)):
+        return repr(obj)
+    if callable(obj) and is_python_syntax(obj.__name__):
+        return obj.__name__
+    return "..."
+
+
 class Debug:
     def __repr__(self):
         pairs = ", ".join(
             (
-                f"{k}={repr(v)}"
+                f"{k}={pythonify(v)}"
                 for k, v in vars(self).items()
-                if not k.startswith("_") and not callable(v)
-                if is_python_syntax(k) and is_python_syntax(repr(v))
+                if not k.startswith("_")
             )
         )
         name = type(self).__name__
@@ -50,7 +58,7 @@ class Option(Debug, click.Option):
     pass
 
 
-class Group(Debug, click.Group):
+class Group(Debug, clout.CountingGroup):
     def __call__(self, *args, **kwargs):
         try:
             return super().__call__(*args, **kwargs, standalone_mode=False)
@@ -59,7 +67,7 @@ class Group(Debug, click.Group):
                 raise
 
 
-class Command(Debug, click.Command):
+class Command(Debug, clout.CountingCommand):
     def __call__(self, *args, **kwargs):
         try:
             return super().__call__(*args, **kwargs)
@@ -118,10 +126,12 @@ class CLI:
 
     @functools.singledispatch
     def make_param_from_field(self, field: marshmallow.fields.Field) -> click.Parameter:
+
         return click.Option(
             ["--" + field.name],
             type=MarshmallowFieldParam(field),
             required=field.missing == marshmallow.missing,
+            default=field.default,
         )
 
     @make_param_from_field.register
@@ -161,7 +171,6 @@ class CLI:
             else:
                 raise TypeError(field)
 
-        print("commands:", commands)
         if commands:
             return Group(
                 name=name,
@@ -185,6 +194,7 @@ class CLI:
         else:
             schema = mmdc.class_schema(typ)()
             command = self.make_command_from_schema(schema, name=metadata["name"])
+            command.callback = schema.load
         return command
 
 
