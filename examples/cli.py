@@ -1,16 +1,16 @@
 import typing as t
 
-import attr
+import dataclasses
 
 import desert.loaders.click
 
 
-@attr.dataclass
+@dataclasses.dataclass
 class Dog:
     color: str
 
 
-@attr.dataclass
+@dataclasses.dataclass
 class Person:
     name: str
     pet: Dog
