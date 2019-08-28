@@ -2,7 +2,9 @@ import collections
 import typing as t
 
 import attr
+import marshmallow
 
+from .. import exceptions
 from . import mmdc
 
 
@@ -28,8 +30,15 @@ class Multi:
 
     def prep(self, cls):
         multi = self.set_data_on_loaders()
-        return collections.ChainMap(*[loader.prep(cls) for loader in multi.loaders])
+        return collections.ChainMap(
+            *[loader.prep(cls) or {} for loader in multi.loaders]
+        )
 
     def build(self, cls):
         schema = mmdc.class_schema(cls)()
-        return schema.load(self.prep(cls))
+        prepped = self.prep(cls)
+
+        try:
+            return schema.load(prepped)
+        except marshmallow.exceptions.ValidationError as e:
+            raise exceptions.ValidationError(*e.args) from e

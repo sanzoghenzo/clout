@@ -126,41 +126,43 @@ def make_help_command():
     return Command(name="--help", hidden=True)
 
 
+@functools.singledispatch
+def make_param_from_field(field: marshmallow.fields.Field) -> click.Parameter:
+    return click.Option(
+        ["--" + field.name],
+        type=MarshmallowFieldParam(field),
+        required=field.missing == marshmallow.missing,
+        default=field.default,
+    )
+
+
+@make_param_from_field.register(marshmallow.fields.Boolean)
+def _(field: marshmallow.fields.Boolean) -> Option:
+
+    return Option(
+        ["--" + field.name],
+        default=False if field.default == marshmallow.missing else field.default,
+        required=field.missing == marshmallow.missing,
+        is_flag=True,
+    )
+
+
+@make_param_from_field.register(marshmallow.fields.String)
+@make_param_from_field.register(marshmallow.fields.Int)
+@make_param_from_field.register(marshmallow.fields.Float)
+@make_param_from_field.register(marshmallow.fields.Date)
+@make_param_from_field.register(marshmallow.fields.DateTime)
+@make_param_from_field.register(marshmallow.fields.Raw)
+def _(field) -> Option:
+    param_type = MM_TO_CLICK[type(field)]
+    return Option(["--" + field.name], type=param_type)
+
+
 @attr.dataclass(frozen=True)
 class CLI:
     inherits: t.FrozenSet[str] = attr.ib(default=frozenset())
     metadata_key: str = "cli"
     args: t.List[str] = attr.ib(factory=list)
-
-    @functools.singledispatch
-    def make_param_from_field(self, field: marshmallow.fields.Field) -> click.Parameter:
-
-        return click.Option(
-            ["--" + field.name],
-            type=MarshmallowFieldParam(field),
-            required=field.missing == marshmallow.missing,
-            default=field.default,
-        )
-
-    @make_param_from_field.register
-    def _(self, field: marshmallow.fields.Boolean) -> Option:
-
-        return Option(
-            ["--" + field.name],
-            default=field.default,
-            required=field.missing == marshmallow.missing,
-            is_flag=True,
-        )
-
-    @make_param_from_field.register(marshmallow.fields.String)
-    @make_param_from_field.register(marshmallow.fields.Int)
-    @make_param_from_field.register(marshmallow.fields.Float)
-    @make_param_from_field.register(marshmallow.fields.Date)
-    @make_param_from_field.register(marshmallow.fields.DateTime)
-    @make_param_from_field.register(marshmallow.fields.Raw)
-    def _(self, field) -> Option:
-        param_type = MM_TO_CLICK[type(field)]
-        return Option(["--" + field.name], type=param_type)
 
     def make_command_from_schema(
         self, schema: marshmallow.Schema, name: str
@@ -175,7 +177,7 @@ class CLI:
                     self.make_command_from_schema(field.schema, name=field.name)
                 )
             elif isinstance(field, marshmallow.fields.Field):
-                params.append(self.make_param_from_field(field))
+                params.append(make_param_from_field(field))
             else:
                 raise TypeError(field)
 
@@ -232,9 +234,15 @@ class CLI:
     ):
         command = self.get_command(typ, default, metadata, args)
 
-        return clout.Parser(command, callback=command.callback).parse_args(
-            [TOP_LEVEL_NAME] + (args or self.args or sys.argv[1:])
-        )
+        parser = clout.Parser(command, callback=command.callback)
+        cli_args = [TOP_LEVEL_NAME] + (args or self.args or sys.argv[1:])
+        import lark
+
+        try:
+            return parser.parse_args(cli_args)
+        except (lark.exceptions.ParseError, lark.exceptions.UnexpectedCharacters):
+            print(command.get_help(click.Context(command)))
+            raise
 
     def build(
         self,
@@ -244,10 +252,7 @@ class CLI:
         args=(),
     ):
         command = self.get_command(typ, default, metadata, args)
-
-        return clout.Parser(command, callback=command.callback).invoke_args(
-            args or self.args or sys.argv
-        )
+        return command.callback(self.prep(typ, default, metadata, args))
 
     def set(self, **kw):
         return attr.evolve(self, **kw)
