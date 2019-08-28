@@ -216,7 +216,7 @@ class CLI:
         command = self.get_command(typ, default, metadata, args)
 
         return clout.Parser(command, callback=command.callback).parse_args(
-            args or self.args or sys.argv
+            args or self.args or sys.argv[1:]
         )
 
     def build(

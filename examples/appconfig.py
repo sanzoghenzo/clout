@@ -1,5 +1,8 @@
+#!/usr/bin/env python3
+
 import os
 import pathlib
+import subprocess
 import typing as t
 
 import click
@@ -45,7 +48,7 @@ args = ["owner", "cat", "--claws", "long"]
 
 multi = desert.loaders.multi.Multi(
     [
-        desert.loaders.cli.CLI(args=args),
+        desert.loaders.cli.CLI(),
         desert.loaders.env.Env(),
         desert.loaders.appfile.TOMLFile(),
     ],
@@ -54,3 +57,7 @@ multi = desert.loaders.multi.Multi(
 
 
 print(multi.build(Owner))
+
+
+# $ appconfig.py owner cat --claws long
+# Owner(name='Alice', dog=Dog(coat=Coat(color='brown')), cat=Cat(claws='long'), age=21)
