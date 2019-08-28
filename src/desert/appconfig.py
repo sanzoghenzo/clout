@@ -35,7 +35,7 @@ class Cat:
 
 
 @dataclasses.dataclass
-class Owner:
+class PetOwner:
     """This is an owner."""
 
     name: str
@@ -48,9 +48,9 @@ config_file = pathlib.Path.home() / ".config/pets/config.toml"
 config_file.parent.mkdir(exist_ok=True)
 config_file.write_text('[dog.coat]\ncolor="brown"')
 
-os.environ["OWNER_NAME"] = "Alice"
+os.environ["PETOWNER_NAME"] = "Alice"
 
-args = ["owner", "cat", "--claws", "long"]
+args = ["pet-owner", "cat", "--claws", "long"]
 
 
 multi = loaders.multi.Multi(
@@ -59,7 +59,7 @@ multi = loaders.multi.Multi(
 )
 
 
-print(multi.build(Owner))
+print(multi.build(PetOwner))
 
 
 # $ appconfig.py owner cat --claws=long

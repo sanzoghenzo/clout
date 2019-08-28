@@ -56,7 +56,7 @@ def one_of(items):
 
 
 def name_rule(obj) -> str:
-    return f"{obj.name.lstrip('-')}_{id(obj)}"
+    return f"{obj.name.lstrip('-').replace('-', '_')}_{id(obj)}"
 
 
 @to_lark.register
