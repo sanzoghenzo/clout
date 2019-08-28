@@ -18,16 +18,6 @@ NO_DEFAULT = "__NO_DEFAULT__"
 TOP_LEVEL_NAME = "top_level_name"
 NoneType = type(None)
 
-native_to_click = {}
-
-
-def register_type(typ):
-    def register_function(func):
-        native_to_click[typ] = func
-        return func
-
-    return register_function
-
 
 def is_python_syntax(s: str) -> bool:
     try:
@@ -78,25 +68,6 @@ class Command(Debug, clout.CountingCommand):
         except SystemExit:
             if e.code != 0:
                 raise
-
-
-@register_type(bool)
-def _(typ, metadata, default=util.UNSET):
-    return Option(["--" + metadata["field_name"]], is_flag=True, default=default)
-
-
-@register_type(int)
-@register_type(float)
-@register_type(str)
-@register_type(bool)
-def __(typ, metadata, default=util.UNSET):
-
-    return Option(
-        ["--" + metadata["field_name"]],
-        type=typ,
-        default=None if default in {NO_DEFAULT, attr.NOTHING} else default,
-        required=default in {NO_DEFAULT, attr.NOTHING},
-    )
 
 
 class MarshmallowFieldParam(click.ParamType):
