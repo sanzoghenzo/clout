@@ -4,8 +4,10 @@ import typing as t
 import attr
 import environs
 import glom
+import inflection
 import marshmallow
 
+from .. import util
 from . import mmdc
 
 
@@ -23,9 +25,10 @@ class Env:
         for field in schema.fields.values():
 
             if isinstance(field, marshmallow.fields.Nested):
-                d.update(
-                    self.make_path_to_field(field.schema, path=path + (field.name,))
+                recursed = self.make_path_to_field(
+                    field.schema, path=path + (field.name,)
                 )
+                d.update(recursed)
 
             elif isinstance(field, marshmallow.fields.Field):
                 d[path + (field.name,)] = field
@@ -35,13 +38,13 @@ class Env:
         return d
 
     def make_envvar_name(self, path: t.Tuple[str]) -> str:
-        return "_".join(path).upper()
+        return inflection.underscore("_".join(path)).upper()
 
     def prep(self, typ, metadata=None, default=None, env=None):
         # TODO make sure this handles lists correctly.
         # If a field is a list, this should return a list, not a single member.
         metadata = metadata or {}
-        top_name = typ.__name__.lower()
+        top_name = util.dasherize(typ.__name__)
 
         schema = mmdc.class_schema(typ)()
         path_to_field = self.make_path_to_field(schema, path=(top_name,))
@@ -53,6 +56,7 @@ class Env:
             value = os.environ.get(name)
             if value is not None:
                 d[path] = field.deserialize(value)
+
         return make_nested(d)[top_name]
 
     def set(self, **kw):
