@@ -9,6 +9,9 @@ import click
 import lark
 
 
+ALWAYS_ACCEPT = True
+
+
 class CountingBaseCommand:
     def __init__(self, *args, nargs=1, required=False, **kwargs):
         self.nargs = nargs
@@ -163,6 +166,7 @@ class Walker(lark.Visitor):
                 param_or_cmd_id = name_rule(param_or_cmd)
                 observed = counter.get(param_or_cmd_id, 0)
                 if param_or_cmd.required and observed == 0:
+
                     raise InvalidInput(param_or_cmd, observed)
                 if (
                     not param_or_cmd.multiple
@@ -259,11 +263,12 @@ class Parser:
 
         parser = lark.Lark(grammar)
         tree = parser.parse(s)
-        Walker(group=self.group).visit(tree)
+        if not ALWAYS_ACCEPT:
+            Walker(group=self.group).visit(tree)
         _group, value = Transformer(group=self.group).transform(tree)
         return value
 
-    def parse_list(self, args: t.List[str]):
+    def parse_args(self, args: t.List[str]):
         line = subprocess.list2cmdline(args)
         return self.parse_string(line)
 
@@ -271,7 +276,7 @@ class Parser:
         return self.callback(self.parse_string(line))
 
     def invoke_args(self, args: t.List[str]):
-        return self.callback(self.parse_list(args))
+        return self.callback(self.parse_args(args))
 
 
 if __name__ == "__main__":
