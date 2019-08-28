@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 
+import dataclasses
 import os
 import pathlib
-import subprocess
 import typing as t
-
-import click
-import dataclasses
 
 import desert.loaders.appfile
 import desert.loaders.cli
