@@ -270,6 +270,9 @@ class Parser:
     def invoke_string(self, line: str):
         return self.callback(self.parse_string(line))
 
+    def invoke_args(self, args: t.List[str]):
+        return self.callback(self.parse_list(args))
+
 
 if __name__ == "__main__":
 
