@@ -309,10 +309,6 @@ def field_for_schema(
 
     if default is not marshmallow.missing:
         metadata.setdefault("default", default)
-        if not metadata.get(
-            "required"
-        ):  # 'missing' must not be set for required fields.
-            metadata.setdefault("missing", default)
     else:
         metadata.setdefault("required", True)
 
@@ -345,7 +341,7 @@ def field_for_schema(
             subtyp = next(t for t in arguments if t is not NoneType)
             # Treat optional types as types with a None default
             metadata["default"] = metadata.get("default", None)
-            metadata["missing"] = metadata.get("missing", None)
+
             metadata["required"] = False
             return field_for_schema(subtyp, metadata=metadata)
         elif typing_inspect.is_union_type(typ):
