@@ -1,5 +1,7 @@
 # MIT License
 
+# Modified from original by
+
 # Copyright (c) 2019 Ophir LOJKINE
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -68,6 +70,7 @@ from typing import Tuple
 from typing import Type
 from typing import cast
 
+import attr
 import marshmallow
 import typing_inspect
 
@@ -75,6 +78,40 @@ import typing_inspect
 __all__ = ["dataclass", "add_schema", "class_schema", "field_for_schema"]
 
 NoneType = type(None)
+
+
+def attr2field(att) -> dataclasses.Field:
+    """Convert an attrs attribute to a dataclasses field."""
+    defaults = {}
+    if att.default != attr.NOTHING:
+        if isinstance(att.default, attr.Factory):
+            defaults["default_factory"] = att.default.factory
+        else:
+            defaults["default"] = att.default
+
+    return dataclasses.field(
+        init=att.init,
+        repr=att.repr,
+        hash=att.hash,
+        compare=att.cmp,
+        metadata=att.metadata,
+        **defaults,
+    )
+
+
+def attr2dataclass(cls: Type) -> Type:
+    """Convert an attrs class to a dataclass."""
+    fields = [(att.name, att.type, attr2field(att)) for att in attr.fields(cls)]
+    return dataclasses.make_dataclass(
+        cls.__name__,
+        bases=cls.__bases__,
+        fields=fields,
+        init=False,
+        repr=False,
+        eq=False,
+        order=False,
+        frozen=False,
+    )
 
 
 # _cls should never be specified by keyword, so start it with an
@@ -220,6 +257,8 @@ def class_schema(clazz: type) -> Type[marshmallow.Schema]:
         # noinspection PyDataclass
         fields: Tuple[dataclasses.Field] = dataclasses.fields(clazz)
     except TypeError:  # Not a dataclass
+        if attr.has(clazz):
+            clazz = attr2dataclass(clazz)
         try:
             return class_schema(dataclasses.dataclass(clazz))
         except Exception:
