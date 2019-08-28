@@ -25,3 +25,4 @@ def Loader.inherit(self, key, value):
 - Allow overriding the @type metadata with its container's field metadata?
 - The CLI should be built from the marshmallow schema so it can validate on callback
 - Get a desert snake logo
+- Provide better error messages for parsing
