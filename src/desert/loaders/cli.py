@@ -8,6 +8,7 @@ import click
 import marshmallow
 import typing_inspect
 
+from .. import util
 from . import clout
 from . import mmdc
 
@@ -78,7 +79,7 @@ class Command(Debug, clout.CountingCommand):
 
 
 @register_type(bool)
-def _(typ, metadata, default):
+def _(typ, metadata, default=util.UNSET):
     return Option(["--" + metadata["field_name"]], is_flag=True, default=default)
 
 
@@ -86,7 +87,7 @@ def _(typ, metadata, default):
 @register_type(float)
 @register_type(str)
 @register_type(bool)
-def __(typ, metadata, default):
+def __(typ, metadata, default=util.UNSET):
 
     return Option(
         ["--" + metadata["field_name"]],
@@ -124,6 +125,7 @@ MM_TO_CLICK = {
 class CLI:
     inherits: t.FrozenSet[str] = attr.ib(default=frozenset())
     metadata_key: str = "cli"
+    args: t.List[str] = attr.ib(factory=list)
 
     @functools.singledispatch
     def make_param_from_field(self, field: marshmallow.fields.Field) -> click.Parameter:
@@ -182,7 +184,7 @@ class CLI:
             )
         return Command(name=name, params=params, callback=identity)
 
-    def build(
+    def get_command(
         self,
         typ: t.Type,
         default=NO_DEFAULT,
@@ -202,10 +204,36 @@ class CLI:
                 schema, name=metadata.get("name", typ.__name__.lower())
             )
             command.callback = schema.load
+        return command
+
+    def prep(
+        self,
+        typ: t.Type,
+        default=NO_DEFAULT,
+        metadata: t.Mapping[str, t.Any] = None,
+        args=(),
+    ):
+        command = self.get_command(typ, default, metadata, args)
+
+        return clout.Parser(command, callback=command.callback).parse_args(
+            args or self.args or sys.argv
+        )
+
+    def build(
+        self,
+        typ: t.Type,
+        default=NO_DEFAULT,
+        metadata: t.Mapping[str, t.Any] = None,
+        args=(),
+    ):
+        command = self.get_command(typ, default, metadata, args)
 
         return clout.Parser(command, callback=command.callback).invoke_args(
-            args or sys.argv
+            args or self.args or sys.argv
         )
+
+    def set(self, **kw):
+        return attr.evolve(self, **kw)
 
 
 def identity(*args, **kw):
