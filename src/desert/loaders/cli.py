@@ -112,7 +112,7 @@ def make_param_from_field(field: marshmallow.fields.Field) -> click.Parameter:
 def _(field: marshmallow.fields.Boolean) -> Option:
 
     return Option(
-        ["--" + field.name],
+        [util.dasherize(f"--{field.name}/--no-{field.name}")],
         default=False if field.default == marshmallow.missing else field.default,
         required=field.missing == marshmallow.missing,
         is_flag=True,
@@ -185,10 +185,7 @@ class CLI:
         if isinstance(cli_metadata, (click.BaseCommand, click.Parameter)):
             command = cli_metadata
         else:
-            name = metadata.get(
-                "name",
-                inflection.dasherize(inflection.underscore(typ.__name__)).lower(),
-            )
+            name = metadata.get("name", util.dasherize(typ.__name__))
 
             schema = mmdc.class_schema(typ)()
             command = self.make_command_from_schema(schema, name=name)
