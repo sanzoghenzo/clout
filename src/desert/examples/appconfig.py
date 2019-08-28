@@ -64,6 +64,5 @@ multi = loaders.multi.Multi(
 
 print(multi.build(Config))
 
-
-# $ myapp config --priority 8 --debug db --host example.com --port 9999
-# Config(db=DB(host='example.com', port=9999), debug=True, priority=8.0, logging=True, dry_run=True)
+# $ myapp config  --debug db --host example.com --port 9999
+# Config(db=DB(host='example.com', port=9999), debug=True, priority=3.0, logging=True, dry_run=True)
