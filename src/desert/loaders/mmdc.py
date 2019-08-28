@@ -50,6 +50,7 @@ Full example::
       Schema: ClassVar[Type[Schema]] = Schema # For the type checker
 """
 
+import dataclasses
 import datetime
 import decimal
 import inspect
@@ -67,7 +68,6 @@ from typing import Tuple
 from typing import Type
 from typing import cast
 
-import dataclasses
 import marshmallow
 import typing_inspect
 
@@ -240,6 +240,7 @@ def class_schema(clazz: type) -> Type[marshmallow.Schema]:
     )
 
     schema_class = type(clazz.__name__, (_base_schema(clazz),), attributes)
+
     return cast(Type[marshmallow.Schema], schema_class)
 
 
@@ -297,6 +298,7 @@ def field_for_schema(
     """
 
     metadata = {} if metadata is None else dict(metadata)
+
     if default is not marshmallow.missing:
         metadata.setdefault("default", default)
         if not metadata.get(
@@ -361,6 +363,7 @@ def field_for_schema(
     # Nested dataclasses
     forward_reference = getattr(typ, "__forward_arg__", None)
     nested = forward_reference or class_schema(typ)
+    nested.help = typ.__doc__
     return marshmallow.fields.Nested(nested, **metadata)
 
 

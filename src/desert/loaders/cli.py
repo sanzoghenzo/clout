@@ -14,6 +14,7 @@ from . import mmdc
 
 
 NO_DEFAULT = "__NO_DEFAULT__"
+TOP_LEVEL_NAME = "top_level_name"
 NoneType = type(None)
 
 native_to_click = {}
@@ -110,7 +111,7 @@ class MarshmallowFieldParam(click.ParamType):
         try:
             return self.field.deserialize(value)
         except marshmallow.exceptions.ValidationError as e:
-            raise click.BadParameter(ctx=ctx, param=param) from e
+            raise click.BadParameter(ctx=ctx, param=param, message=str(e)) from e
 
 
 MM_TO_CLICK = {
@@ -119,6 +120,10 @@ MM_TO_CLICK = {
     marshmallow.fields.Float: click.FLOAT,
     marshmallow.fields.Raw: click.STRING,
 }
+
+
+def make_help_command():
+    return Command(name="--help", hidden=True)
 
 
 @attr.dataclass(frozen=True)
@@ -174,6 +179,9 @@ class CLI:
             else:
                 raise TypeError(field)
 
+        commands.append(make_help_command())
+
+        help = getattr(schema, "help", None)
         if commands:
             return Group(
                 name=name,
@@ -181,8 +189,12 @@ class CLI:
                 params=params,
                 chain=True,
                 result_callback=lambda *a, **kw: (a, kw),
+                help=help,
+                short_help=help,
             )
-        return Command(name=name, params=params, callback=identity)
+        return Command(
+            name=name, params=params, callback=identity, help=help, short_help=help
+        )
 
     def get_command(
         self,
@@ -204,6 +216,11 @@ class CLI:
                 schema, name=metadata.get("name", typ.__name__.lower())
             )
             command.callback = schema.load
+
+        command = Group(
+            name=TOP_LEVEL_NAME,
+            commands={c.name: c for c in [command, make_help_command()]},
+        )
         return command
 
     def prep(
@@ -216,7 +233,7 @@ class CLI:
         command = self.get_command(typ, default, metadata, args)
 
         return clout.Parser(command, callback=command.callback).parse_args(
-            args or self.args or sys.argv[1:]
+            [TOP_LEVEL_NAME] + (args or self.args or sys.argv[1:])
         )
 
     def build(
