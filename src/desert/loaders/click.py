@@ -1,4 +1,5 @@
 import functools
+import sys
 import typing as t
 
 import attr
@@ -181,8 +182,12 @@ class CLI:
             )
         return Command(name=name, params=params, callback=identity)
 
-    def make_field(
-        self, typ: t.Type, default=NO_DEFAULT, metadata: t.Mapping[str, t.Any] = None
+    def build(
+        self,
+        typ: t.Type,
+        default=NO_DEFAULT,
+        metadata: t.Mapping[str, t.Any] = None,
+        args=(),
     ):
         metadata = metadata or {}
 
@@ -193,9 +198,14 @@ class CLI:
             command = cli_metadata
         else:
             schema = mmdc.class_schema(typ)()
-            command = self.make_command_from_schema(schema, name=metadata["name"])
+            command = self.make_command_from_schema(
+                schema, name=metadata.get("name", typ.__name__.lower())
+            )
             command.callback = schema.load
-        return command
+
+        return clout.Parser(command, callback=command.callback).invoke_args(
+            args or sys.argv
+        )
 
 
 def identity(*args, **kw):
