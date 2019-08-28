@@ -239,10 +239,12 @@ class CLI:
         import lark
 
         try:
-            return parser.parse_args(cli_args)
+            result = parser.parse_args(cli_args)
         except (lark.exceptions.ParseError, lark.exceptions.UnexpectedCharacters):
             print(command.get_help(click.Context(command)))
             raise
+        [value] = result.values()
+        return value
 
     def build(
         self,

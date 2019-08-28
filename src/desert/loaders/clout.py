@@ -231,6 +231,10 @@ class Transformer(lark.Transformer):
             else v
             for param, v in d.items()
         }
+        for param in command.params:
+            if param.is_flag and param.name not in out:
+                out[param.name] = param.default
+
         return command, out
 
     def make_command_method(self, command):
@@ -253,7 +257,7 @@ class Transformer(lark.Transformer):
                 parsed = True
             else:
                 [parsed] = parsed
-            print(parsed)
+
             return (param, parsed)
 
         return name_rule(param), method
@@ -274,7 +278,7 @@ class Parser:
     def parse_string(self, s):
         grammar = build_grammar(self.group)
 
-        parser = lark.Lark(grammar)
+        parser = lark.Lark(grammar, maybe_placeholders=True)
         tree = parser.parse(s)
 
         if not ALWAYS_ACCEPT:

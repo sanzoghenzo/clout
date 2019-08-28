@@ -59,7 +59,7 @@ multi = loaders.multi.Multi(
 )
 
 
-print(multi.prep(Owner))
+print(multi.build(Owner))
 
 
 # $ appconfig.py owner cat --claws=long
