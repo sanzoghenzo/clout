@@ -312,7 +312,7 @@ def field_for_schema(
         if not metadata.get(
             "required"
         ):  # 'missing' must not be set for required fields.
-            metadata.setdefault("missing", default)
+            metadata.setdefault("missing", lambda: default)
     else:
         metadata.setdefault("required", True)
 
