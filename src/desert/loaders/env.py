@@ -13,8 +13,9 @@ from . import mmdc
 
 @attr.dataclass
 class Env:
+    app_name: str = None
     metadata_key: str = "env"
-    inherits: t.List[str] = attr.ib(factory=list)
+    inherits: t.List[str] = frozenset({"app_name"})
     env: t.Dict[str, t.Any] = attr.ib(factory=dict)
 
     def make_path_to_field(
@@ -38,7 +39,7 @@ class Env:
         return d
 
     def make_envvar_name(self, path: t.Tuple[str]) -> str:
-        return inflection.underscore("_".join(path)).upper()
+        return inflection.underscore("_".join((self.app_name,) + path)).upper()
 
     def prep(self, typ, metadata=None, default=None, env=None):
         # TODO make sure this handles lists correctly.
@@ -57,7 +58,12 @@ class Env:
             if value is not None:
                 d[path] = field.deserialize(value)
 
-        return make_nested(d)[top_name]
+        nested = make_nested(d)
+
+        try:
+            return nested[top_name]
+        except KeyError:
+            return {}
 
     def set(self, **kw):
         return attr.evolve(self, **kw)

@@ -53,9 +53,6 @@ docs = [
 ]
 
 
-[tool.poetry.scripts]
-mario = "desert.cli:cli"
-
 
 [tool.towncrier]
 

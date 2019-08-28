@@ -9,6 +9,8 @@ import attr
 import click
 import lark
 
+from .. import util
+
 
 ALWAYS_ACCEPT = True
 
@@ -191,8 +193,9 @@ class HelpRequested(Exception):
 
 
 class Transformer(lark.Transformer):
-    def __init__(self, *args, group, **kwargs):
+    def __init__(self, *args, group, use_defaults, **kwargs):
         self.group = group
+        self.use_defaults = use_defaults
         super().__init__(*args, **kwargs)
         base_commands = list(get_base_commands(self.group))
         self.all_param_names = {name_rule(p) for c in base_commands for p in c.params}
@@ -215,6 +218,7 @@ class Transformer(lark.Transformer):
 
         d = {}
         for param, value in parsed:
+
             if param.name == "--help":
                 print(command.get_help(click.Context(command)))
                 sys.exit()
@@ -225,15 +229,20 @@ class Transformer(lark.Transformer):
             else:
                 d[param] = value
 
-        out = {
-            param.name: param.process_value(click.Context(command), v)
-            if isinstance(param, click.Parameter)
-            else v
-            for param, v in d.items()
-        }
-        for param in command.params:
-            if param.is_flag and param.name not in out and not param.required:
-                out[param.name] = param.default
+        out = {}
+        for param, value in d.items():
+            if isinstance(param, click.Parameter):
+                out[param.name] = param.process_value(click.Context(command), value)
+            elif isinstance(param, click.BaseCommand):
+
+                out[param.name] = {k: v for k, v in value.items() if v != util.UNSET}
+            else:
+                raise TypeError(param)
+
+        if self.use_defaults:
+            for param in command.params:
+                if param.name not in out and not param.required:
+                    out[param.name] = param.default
 
         return command, out
 
@@ -267,6 +276,7 @@ class Transformer(lark.Transformer):
 class Parser:
     group: CountingGroup
     callback: t.Callable = lambda **kw: kw
+    use_defaults: bool = True
     _id_to_object: t.Dict[str, object] = attr.ib(factory=dict)
 
     def __attrs_post_init__(self):
@@ -283,7 +293,9 @@ class Parser:
 
         if not ALWAYS_ACCEPT:
             Walker(group=self.group).visit(tree)
-        _group, value = Transformer(group=self.group).transform(tree)
+        _group, value = Transformer(
+            group=self.group, use_defaults=self.use_defaults
+        ).transform(tree)
         return value
 
     def parse_args(self, args: t.List[str]):
