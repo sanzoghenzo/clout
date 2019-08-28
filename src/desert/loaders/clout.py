@@ -2,6 +2,7 @@ import collections
 import functools
 import math
 import subprocess
+import sys
 import typing as t
 
 import attr
@@ -10,6 +11,8 @@ import lark
 
 
 ALWAYS_ACCEPT = True
+
+HELP_COMMAND = "HELP_COMMAND"
 
 
 class CountingBaseCommand:
@@ -53,7 +56,7 @@ def one_of(items):
 
 
 def name_rule(obj) -> str:
-    return f"{obj.name}_{id(obj)}"
+    return f"{obj.name.lstrip('-')}_{id(obj)}"
 
 
 @to_lark.register
@@ -183,6 +186,10 @@ class InvalidInput(Exception):
     pass
 
 
+class HelpRequested(Exception):
+    pass
+
+
 class Transformer(lark.Transformer):
     def __init__(self, *args, group, **kwargs):
         self.group = group
@@ -208,6 +215,9 @@ class Transformer(lark.Transformer):
 
         d = {}
         for param, value in parsed:
+            if param.name == "--help":
+                print(command.get_help(click.Context(command)))
+                sys.exit()
             if isinstance(param, click.Parameter):
                 value = str(value)
             if param.multiple or param.nargs != 1:

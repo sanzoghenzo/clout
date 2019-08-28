@@ -5,29 +5,38 @@ import os
 import pathlib
 import typing as t
 
-import desert.loaders.appfile
-import desert.loaders.cli
-import desert.loaders.env
-import desert.loaders.multi
+from . import loaders
+from .loaders import appfile
+from .loaders import cli
+from .loaders import env
+from .loaders import multi
 
 
 @dataclasses.dataclass
 class Coat:
+    """A colorful coat."""
+
     color: str
 
 
 @dataclasses.dataclass
 class Dog:
+    """Canis canis."""
+
     coat: Coat
 
 
 @dataclasses.dataclass
 class Cat:
+    """Cats are sneaky."""
+
     claws: str
 
 
 @dataclasses.dataclass
 class Owner:
+    """This is an owner."""
+
     name: str
     dog: Dog
     cat: Cat
@@ -43,12 +52,8 @@ os.environ["OWNER_NAME"] = "Alice"
 args = ["owner", "cat", "--claws", "long"]
 
 
-multi = desert.loaders.multi.Multi(
-    [
-        desert.loaders.cli.CLI(),
-        desert.loaders.env.Env(),
-        desert.loaders.appfile.TOMLFile(),
-    ],
+multi = loaders.multi.Multi(
+    [loaders.cli.CLI(), loaders.env.Env(), loaders.appfile.TOMLFile()],
     data=dict(app_name="pets"),
 )
 
@@ -56,5 +61,5 @@ multi = desert.loaders.multi.Multi(
 print(multi.build(Owner))
 
 
-# $ appconfig.py owner cat --claws long
+# $ appconfig.py owner cat --claws=long
 # Owner(name='Alice', dog=Dog(coat=Coat(color='brown')), cat=Cat(claws='long'), age=21)
