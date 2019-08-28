@@ -103,7 +103,7 @@ def make_param_from_field(field: marshmallow.fields.Field) -> click.Parameter:
     return click.Option(
         ["--" + field.name],
         type=MarshmallowFieldParam(field),
-        required=field.missing == marshmallow.missing,
+        required=False,
         default=field.default,
     )
 
@@ -113,7 +113,7 @@ def _(field: marshmallow.fields.Boolean) -> Option:
 
     return Option(
         [util.dasherize(f"--{field.name}/--no-{field.name}")],
-        default=False if field.default == marshmallow.missing else field.default,
+        default=field.default,
         required=field.missing == marshmallow.missing,
         is_flag=True,
     )
@@ -204,9 +204,10 @@ class CLI:
         metadata: t.Mapping[str, t.Any] = None,
         args=(),
     ):
+
         command = self.get_command(typ, default, metadata, args)
 
-        parser = clout.Parser(command, callback=command.callback)
+        parser = clout.Parser(command, callback=command.callback, use_defaults=False)
         cli_args = [TOP_LEVEL_NAME] + (args or self.args or sys.argv[1:])
         import lark
 

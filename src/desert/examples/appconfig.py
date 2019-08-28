@@ -21,26 +21,25 @@ class DB:
 
 
 @dataclass
-class AppConfig:
+class Config:
     db: DB
     debug: bool
+    priority: int = 0
     logging: bool = True
     dry_run: bool = False
-    level: int = 4
 
 
 config_file = pathlib.Path.home() / ".config/myapp/config.toml"
 config_file.parent.mkdir(exist_ok=True)
 config_file.write_text(
     """\
-[db]
-host= "example.com"
-port= 9999
+logging = true
+priority = 3
 """
 )
 
 
-os.environ["APP_CONFIG_DRY_RUN"] = "1"
+os.environ["MYAPP_CONFIG_DRY_RUN"] = "1"
 
 
 multi = loaders.multi.Multi(
@@ -53,8 +52,4 @@ multi = loaders.multi.Multi(
 )
 
 
-print(multi.build(AppConfig))
-
-
-# $ appconfig.py owner cat --claws=long
-# Owner(name='Alice', dog=Dog(coat=Coat(color='brown')), cat=Cat(claws='long'), age=21)
+print(multi.build(Config))
