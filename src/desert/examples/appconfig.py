@@ -3,7 +3,8 @@
 import os
 import pathlib
 import typing as t
-from dataclasses import dataclass
+
+from attr import dataclass
 
 from .. import encoders
 from .. import loaders
