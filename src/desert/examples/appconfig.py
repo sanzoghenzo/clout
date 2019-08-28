@@ -65,7 +65,7 @@ priority = 3
 )
 
 
-os.environ["MYAPP_CONFIG_DRY_RUN"] = "1"
+os.environ["MYAPP_APP_DANCE_DRY_RUN"] = "1"
 
 
 multi = loaders.multi.Multi(
