@@ -1,4 +1,5 @@
 import collections
+import collections.abc
 import typing as t
 
 import attr
@@ -30,15 +31,20 @@ class Multi:
 
     def prep(self, cls):
         multi = self.set_data_on_loaders()
-        return collections.ChainMap(
-            *[loader.prep(cls) or {} for loader in multi.loaders]
-        )
+        return DeepChainMap(*[loader.prep(cls) or {} for loader in multi.loaders])
 
     def build(self, cls):
         schema = mmdc.class_schema(cls)()
         prepped = self.prep(cls)
-
         try:
             return schema.load(prepped)
         except marshmallow.exceptions.ValidationError as e:
             raise exceptions.ValidationError(*e.args) from e
+
+
+class DeepChainMap(collections.ChainMap):
+    def __getitem__(self, key):
+        value = super().__getitem__(key)
+        if isinstance(value, collections.abc.Mapping):
+            return type(self)(*[m[key] for m in self.maps if key in m])
+        return value
