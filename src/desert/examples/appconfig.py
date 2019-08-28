@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
+import dataclasses
 import os
 import pathlib
 import typing as t
 
-from attr import dataclass
+import attr
+import click
 
 from .. import encoders
 from .. import loaders
@@ -15,17 +17,24 @@ from ..loaders import env
 from ..loaders import multi
 
 
-@dataclass
+@attr.dataclass
 class DB:
     host: str
     port: int
 
 
-@dataclass
+@attr.dataclass
 class Config:
     db: DB
     debug: bool
-    priority: int = 0
+    priority: float = attr.ib(
+        default=0,
+        metadata={
+            "desert": {
+                "cli": dict(param_decls=["--priority"], help="App priority value")
+            }
+        },
+    )
     logging: bool = True
     dry_run: bool = False
 
@@ -54,3 +63,7 @@ multi = loaders.multi.Multi(
 
 
 print(multi.build(Config))
+
+
+# $ myapp config --priority 8 --debug db --host example.com --port 9999
+# Config(db=DB(host='example.com', port=9999), debug=True, priority=8.0, logging=True, dry_run=True)
