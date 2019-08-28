@@ -91,6 +91,7 @@ MM_TO_CLICK = {
     marshmallow.fields.Int: click.INT,
     marshmallow.fields.Float: click.FLOAT,
     marshmallow.fields.Raw: click.STRING,
+    marshmallow.fields.Bool: click.BOOL,
 }
 
 
@@ -99,8 +100,15 @@ def make_help_command():
 
 
 @functools.singledispatch
-def make_param_from_field(field: marshmallow.fields.Field) -> click.Parameter:
-    return click.Option(
+def make_param_from_field(field: marshmallow.fields.Field, data) -> click.Parameter:
+
+    if data:
+        data = data.copy()
+        if "type" not in data:
+            data["type"] = MM_TO_CLICK[type(field)]
+        return Option(**data)
+
+    return Option(
         ["--" + field.name],
         type=MarshmallowFieldParam(field),
         required=False,
@@ -109,7 +117,9 @@ def make_param_from_field(field: marshmallow.fields.Field) -> click.Parameter:
 
 
 @make_param_from_field.register(marshmallow.fields.Boolean)
-def _(field: marshmallow.fields.Boolean) -> Option:
+def _(field: marshmallow.fields.Boolean, data) -> Option:
+    if data:
+        return Option(**data)
 
     return Option(
         [util.dasherize(f"--{field.name}/--no-{field.name}")],
@@ -125,7 +135,13 @@ def _(field: marshmallow.fields.Boolean) -> Option:
 @make_param_from_field.register(marshmallow.fields.Date)
 @make_param_from_field.register(marshmallow.fields.DateTime)
 @make_param_from_field.register(marshmallow.fields.Raw)
-def _(field) -> Option:
+def _(field, data) -> Option:
+    if data:
+        data = data.copy()
+
+        if "type" not in data:
+            data["type"] = MM_TO_CLICK[type(field)]
+        return Option(**data)
     param_type = MM_TO_CLICK[type(field)]
     return Option(["--" + field.name], type=param_type)
 
@@ -143,13 +159,14 @@ class CLI:
         commands = []
         # import pudb; pudb.set_trace()
         for field in schema.fields.values():
-
             if isinstance(field, marshmallow.fields.Nested):
                 commands.append(
                     self.make_command_from_schema(field.schema, name=field.name)
                 )
             elif isinstance(field, marshmallow.fields.Field):
-                params.append(make_param_from_field(field))
+                user_specified = field.metadata.get("cli")
+                param = make_param_from_field(field, user_specified)
+                params.append(param)
             else:
                 raise TypeError(field)
 

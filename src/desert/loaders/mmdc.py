@@ -68,51 +68,18 @@ from typing import NewType
 from typing import Optional
 from typing import Tuple
 from typing import Type
+from typing import Union
 from typing import cast
 
 import attr
 import marshmallow
+import pyrsistent
 import typing_inspect
 
 
 __all__ = ["dataclass", "add_schema", "class_schema", "field_for_schema"]
 
 NoneType = type(None)
-
-
-def attr2field(att) -> dataclasses.Field:
-    """Convert an attrs attribute to a dataclasses field."""
-    defaults = {}
-    if att.default != attr.NOTHING:
-        if isinstance(att.default, attr.Factory):
-            defaults["default_factory"] = att.default.factory
-        else:
-            defaults["default"] = att.default
-
-    return dataclasses.field(
-        init=att.init,
-        repr=att.repr,
-        hash=att.hash,
-        compare=att.cmp,
-        metadata=att.metadata,
-        **defaults,
-    )
-
-
-def attr2dataclass(cls: Type) -> Type:
-    """Convert an attrs class to a dataclass."""
-    fields = [(att.name, att.type, attr2field(att)) for att in attr.fields(cls)]
-    return dataclasses.make_dataclass(
-        cls.__name__,
-        bases=cls.__bases__,
-        fields=fields,
-        init=False,
-        repr=False,
-        eq=False,
-        order=False,
-        frozen=False,
-    )
-
 
 # _cls should never be specified by keyword, so start it with an
 # underscore.  The presence of _cls is used to detect if this
@@ -253,22 +220,24 @@ def class_schema(clazz: type) -> Type[marshmallow.Schema]:
     TypeError: None is not a dataclass and cannot be turned into one.
     """
 
-    try:
-        # noinspection PyDataclass
-        fields: Tuple[dataclasses.Field] = dataclasses.fields(clazz)
-    except TypeError:  # Not a dataclass
-        if attr.has(clazz):
-            clazz = attr2dataclass(clazz)
+    fields: Union[Tuple[dataclasses.Field], Tuple[attr.Attribute]]
+    if dataclasses.is_dataclass(clazz):
+        fields = dataclasses.fields(clazz)
+    elif attr.has(clazz):
+        fields = attr.fields(clazz)
+    else:
         try:
-            return class_schema(dataclasses.dataclass(clazz))
-        except Exception:
+            clazz = dataclasses.dataclass(clazz)
+        except TypeError as e:
             raise TypeError(
                 f"{getattr(clazz, '__name__', repr(clazz))} is not a dataclass and cannot be turned into one."
-            )
+            ) from e
+        return class_schema(clazz)
 
     # Copy all public members of the dataclass to the schema
     attributes = {k: v for k, v in inspect.getmembers(clazz) if not k.startswith("_")}
     # Update the schema members to contain marshmallow fields instead of dataclass fields
+
     attributes.update(
         (
             field.name,
@@ -336,7 +305,7 @@ def field_for_schema(
     <class 'marshmallow.fields.Raw'>
     """
 
-    metadata = {} if metadata is None else dict(metadata)
+    metadata = {} if metadata is None else dict(metadata).get("desert", {})
 
     if default is not marshmallow.missing:
         metadata.setdefault("default", default)
@@ -415,14 +384,25 @@ def _base_schema(clazz: type) -> Type[marshmallow.Schema]:
     return BaseSchema
 
 
-def _get_field_default(field: dataclasses.Field):
+def _get_field_default(field: Union[dataclasses.Field, attr.Attribute]):
     """
     Return a marshmallow default value given a dataclass default value
     >>> _get_field_default(dataclasses.field())
     <marshmallow.missing>
     """
-    if field.default_factory is not dataclasses.MISSING:
-        return field.default_factory
-    elif field.default is dataclasses.MISSING:
-        return marshmallow.missing
-    return field.default
+    if isinstance(field, dataclasses.Field):
+        if field.default_factory != dataclasses.MISSING:
+            return field.default_factory
+        elif field.default is dataclasses.MISSING:
+            return marshmallow.missing
+        return field.default
+    elif isinstance(field, attr.Attribute):
+        if field.default == attr.NOTHING:
+            return marshmallow.missing
+        if isinstance(field.default, attr.Factory):
+            if field.default.takes_self:
+                raise NotImplementedError("Takes self not implemented")
+            return field.default.factory
+        return field.default
+    else:
+        raise TypeError(field)
