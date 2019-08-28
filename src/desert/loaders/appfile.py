@@ -15,7 +15,7 @@ class AppFile:
     app_name: str = None
     _path: t.Optional[pathlib.Path] = None
     inherits: t.FrozenSet[str] = attr.ib(default=frozenset({"app_name"}))
-    metadata_key: str = "toml"
+    metadata_key: str = "appfile"
     allow_missing_file: bool = False
 
     @property

@@ -17,6 +17,7 @@ environs = "^5.2"
 glom = "^19.2"
 inflection = "^0.3.1"
 typing-extensions = "^3.7"
+importlib_resources = "^1.0"
 
 
 [tool.poetry.dev-dependencies]
