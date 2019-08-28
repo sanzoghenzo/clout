@@ -5,6 +5,7 @@ import typing as t
 import attr
 import black
 import click
+import inflection
 import marshmallow
 import typing_inspect
 
@@ -213,10 +214,13 @@ class CLI:
         if isinstance(cli_metadata, (click.BaseCommand, click.Parameter)):
             command = cli_metadata
         else:
-            schema = mmdc.class_schema(typ)()
-            command = self.make_command_from_schema(
-                schema, name=metadata.get("name", typ.__name__.lower())
+            name = metadata.get(
+                "name",
+                inflection.dasherize(inflection.underscore(typ.__name__)).lower(),
             )
+
+            schema = mmdc.class_schema(typ)()
+            command = self.make_command_from_schema(schema, name=name)
             command.callback = schema.load
 
         command = Group(
