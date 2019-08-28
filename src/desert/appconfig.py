@@ -31,6 +31,7 @@ class Cat:
     """Cats are sneaky."""
 
     claws: str
+    outdoor: bool
 
 
 @dataclasses.dataclass
@@ -58,7 +59,7 @@ multi = loaders.multi.Multi(
 )
 
 
-print(multi.build(Owner))
+print(multi.prep(Owner))
 
 
 # $ appconfig.py owner cat --claws=long

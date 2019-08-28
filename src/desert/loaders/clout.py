@@ -248,9 +248,12 @@ class Transformer(lark.Transformer):
         return name_rule(group), method
 
     def make_param_method(self, cmd, param):
-        @lark.v_args(inline=True)
         def method(parsed):
-
+            if param.is_flag:
+                parsed = True
+            else:
+                [parsed] = parsed
+            print(parsed)
             return (param, parsed)
 
         return name_rule(param), method
@@ -273,6 +276,7 @@ class Parser:
 
         parser = lark.Lark(grammar)
         tree = parser.parse(s)
+
         if not ALWAYS_ACCEPT:
             Walker(group=self.group).visit(tree)
         _group, value = Transformer(group=self.group).transform(tree)
