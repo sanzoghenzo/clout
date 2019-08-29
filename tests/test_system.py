@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sys
 
@@ -21,7 +22,9 @@ def test_appconfig(tmp_path):
         """
         )
 
-        env = {"MYAPP_APP_DANCE_DRY_RUN": "1", "TEST_CONFIG_PATH": config_path}
+        env = os.environ.copy()
+        env.update({"MYAPP_APP_DANCE_DRY_RUN": "1", "TEST_CONFIG_PATH": config_path})
+
         args = [
             "myapp",
             "dance",
