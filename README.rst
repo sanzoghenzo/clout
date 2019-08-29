@@ -72,11 +72,12 @@ https://python-desert.readthedocs.io/
 Usage
 =====
 
-Desert does three things.
+Desert does four things.
 
 * Create a serialization schema from a dataclass (or attrs class).
 * Provides utilities for creating objects from several sources, such as using appdirs and toml.
-* Creates a command-line interface for building complex objects.
+* Creates a command-line interface for building complex objects
+* Allows combining multiple serialization backends with different priorities, so settings from the command line override envvars, which override the config file.
 
 .. code-block:: python
 
