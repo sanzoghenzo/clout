@@ -29,3 +29,5 @@ def Loader.inherit(self, key, value):
 - The CLI could show the default values that would be set based on the other loaders
 - Multi could prevent its loaders from loading the defaults, and then add a final loader that loads the defaults. How to combine this with showing defaults in the CLI?
   - Could run the loaders in reverse order, setting the defaults on the high-precedence ones after running the low-precedence oncs.
+- Dry deserialization (to objects|types)
+- Is it possible to use "--" to disambiguate otherwise ambiguous cli grammars?
