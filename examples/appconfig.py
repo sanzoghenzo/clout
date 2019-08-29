@@ -8,14 +8,14 @@ import typing as t
 import attr
 import click
 
-from .. import encoders
-from .. import loaders
-from .. import runner
-from ..encoders import toml
-from ..loaders import appfile
-from ..loaders import cli
-from ..loaders import env
-from ..loaders import multi
+import desert.encoders.toml
+import desert.loaders.appfile
+import desert.loaders.cli
+import desert.loaders.env
+import desert.loaders.multi
+from desert import encoders
+from desert import loaders
+from desert import runner
 
 
 @attr.dataclass
@@ -72,7 +72,7 @@ multi = loaders.multi.Multi(
     [
         loaders.cli.CLI(),
         loaders.env.Env(),
-        loaders.appfile.AppFile(encoders.toml.TOML(), filename="config.toml"),
+        loaders.appfile.AppFile(desert.encoders.toml.TOML(), filename="config.toml"),
     ],
     data=dict(app_name="myapp"),
 )
@@ -81,5 +81,5 @@ built = multi.build(App)
 runner.run(built)
 
 
-# $ myapp app dance   --debug db --host example.com --port 9999
+# examples/appconfig.py app dance   --debug db --host example.com --port 9999
 # Dancing with config: Config(db=DB(host='example.com', port=9999), debug=True, priority=3.0, logging=True, dry_run=True)
