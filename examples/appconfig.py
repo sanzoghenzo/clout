@@ -19,15 +19,22 @@ from desert import runner
 
 
 @attr.dataclass
+class User:
+    name: str
+
+
+@attr.dataclass
 class DB:
     host: str
     port: int
+    user: User
 
 
 @attr.dataclass
 class Config:
     db: DB
     debug: bool
+    user: User
     priority: float = attr.ib(
         default=0,
         metadata={
