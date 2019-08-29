@@ -45,11 +45,11 @@ class Config:
 
 
 def dance_(config):
-    print("Dancing with config:", config)
+    print("Dancing with config:\n", config)
 
 
 def sing_(config):
-    print("Singing with config:", config)
+    print("Singing with config:\n", config)
 
 
 @attr.dataclass
@@ -58,25 +58,13 @@ class App:
     sing: Config = sing_
 
 
-config_file = pathlib.Path.home() / ".config/myapp/config.toml"
-config_file.parent.mkdir(exist_ok=True)
-config_file.write_text(
-    """\
-[dance]
-logging = true
-priority = 3
-"""
-)
-
-
-os.environ["MYAPP_APP_DANCE_DRY_RUN"] = "1"
-
-
 multi = loaders.multi.Multi(
     [
         loaders.cli.CLI(),
         loaders.env.Env(),
-        loaders.appfile.AppFile(desert.encoders.toml.TOML(), filename="config.toml"),
+        loaders.appfile.AppFile(
+            desert.encoders.toml.TOML(), path=os.environ["TEST_CONFIG_PATH"]
+        ),
     ],
     data=dict(app_name="myapp"),
 )

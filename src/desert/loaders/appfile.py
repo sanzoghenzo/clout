@@ -11,7 +11,7 @@ from . import mmdc
 @attr.dataclass(frozen=True)
 class AppFile:
     encoder: core.Encoder
-    _filename: str
+    _filename: str = None
     app_name: str = None
     _path: t.Optional[pathlib.Path] = None
     inherits: t.FrozenSet[str] = attr.ib(default=frozenset({"app_name"}))
