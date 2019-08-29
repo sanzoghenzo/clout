@@ -300,7 +300,9 @@ class RemoveInvalidBranches(lark.Transformer):
         trees = [tree for tree in data if check_validity(self.group, tree)]
         if len(trees) == 1:
             return trees[0]
-        raise AmbiguousArgs(trees)
+        if len(trees) > 1:
+            raise AmbiguousArgs(trees)
+        raise InvalidInput(data)
 
 
 def check_validity(group, tree):
