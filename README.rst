@@ -1,4 +1,4 @@
-========
+=======
 Overview
 ========
 
@@ -72,24 +72,26 @@ https://python-desert.readthedocs.io/
 Usage
 =====
 
-Desert does four things.
+
+Usage
+=====
+
+Here's a demo of four features
 
 * Create a serialization schema from a dataclass (or attrs class).
-* Provides utilities for creating objects from several sources, such as using appdirs and toml.
-* Creates a command-line interface for building complex objects
-* Allows combining multiple serialization backends with different priorities, so settings from the command line override envvars, which override the config file.
+* Creating objects from several sources, such as using appdirs and toml.
+* Create a command-line interface for building complex nested objects.
+* Use settings from multiple backends at once, falling to the next when one is missing a value.
 
 .. code-block:: python
 
     #!/usr/bin/env python3
 
-    import dataclasses
     import os
     import pathlib
     import typing as t
 
     import attr
-    import click
 
     from desert import encoders
     from desert import loaders
@@ -100,6 +102,10 @@ Desert does four things.
     import desert.loaders.env
     import desert.loaders.multi
 
+
+First we define some classes.
+
+.. code-block:: python
 
     @attr.dataclass
     class DB:
@@ -123,32 +129,22 @@ Desert does four things.
         dry_run: bool = False
 
 
+Define the command-line interface.
+
+.. code-block:: python
+
     def dance_(config):
-        print("Dancing with config:", config)
+        print("Dancing with config:\n", config)
 
 
     def sing_(config):
-        print("Singing with config:", config)
+        print("Singing with config:\n", config)
 
 
     @attr.dataclass
     class App:
         dance: Config = dance_
         sing: Config = sing_
-
-
-    config_file = pathlib.Path.home() / ".config/myapp/config.toml"
-    config_file.parent.mkdir(exist_ok=True)
-    config_file.write_text(
-        """\
-    [dance]
-    logging = true
-    priority = 3
-    """
-    )
-
-
-    os.environ["MYAPP_APP_DANCE_DRY_RUN"] = "1"
 
 
     multi = loaders.multi.Multi(
@@ -164,5 +160,27 @@ Desert does four things.
     runner.run(built)
 
 
-    # examples/appconfig.py app dance   --debug db --host example.com --port 9999
-    # Dancing with config: Config(db=DB(host='example.com', port=9999), debug=True, priority=3.0, logging=True, dry_run=True)
+
+Create a configuration file for the demo.
+
+
+.. code-block:: python
+
+    config_file = pathlib.Path.home() / ".config/myapp/config.toml"
+    config_file.parent.mkdir(exist_ok=True)
+    config_file.write_text(
+        """\
+    [dance]
+    logging = true
+    priority = 3
+    """
+    )
+
+
+Run the app. The ``Config`` and ``DB`` objects are populated with data from the CLI, envvars, and config file, in the order specified in ``Multi()`` above.
+
+.. code-block:: bash
+
+    $ appconfig.py myapp dance --debug db --host example.com --port 9999
+    Dancing with config:
+    Config(db=DB(host='example.com', port=9999), debug=True, priority=3.0, logging=True, dry_run=True)

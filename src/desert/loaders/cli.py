@@ -148,9 +148,10 @@ def _(field, data) -> Option:
 
 @attr.dataclass(frozen=True)
 class CLI:
-    inherits: t.FrozenSet[str] = attr.ib(default=frozenset())
+    inherits: t.FrozenSet[str] = frozenset({"app_name"})
     metadata_key: str = "cli"
     args: t.List[str] = attr.ib(factory=list)
+    app_name: str = None
 
     def make_command_from_schema(
         self, schema: marshmallow.Schema, name: str
@@ -202,7 +203,7 @@ class CLI:
         if isinstance(cli_metadata, (click.BaseCommand, click.Parameter)):
             command = cli_metadata
         else:
-            name = metadata.get("name", util.dasherize(typ.__name__))
+            name = metadata.get("name", util.dasherize(self.app_name))
 
             schema = mmdc.class_schema(typ)()
             command = self.make_command_from_schema(schema, name=name)
