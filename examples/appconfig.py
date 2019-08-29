@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 
-import dataclasses
 import os
 import pathlib
-import typing as t
 
 import attr
-import click
 
 import desert.encoders.toml
 import desert.loaders.appfile
