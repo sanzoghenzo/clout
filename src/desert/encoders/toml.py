@@ -6,7 +6,7 @@ import toml
 
 @attr.dataclass
 class TOML:
-    encoder: toml.TomlEncoder = toml.TomlEncoder
+    encoder: "toml.TomlEncoder" = toml.TomlEncoder
     cls: t.Type = dict
 
     def dumps(self, data, encoder=None) -> str:
