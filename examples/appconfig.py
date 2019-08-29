@@ -79,7 +79,3 @@ multi = loaders.multi.Multi(
 
 built = multi.build(App)
 runner.run(built)
-
-
-# examples/appconfig.py app dance   --debug db --host example.com --port 9999
-# Dancing with config: Config(db=DB(host='example.com', port=9999), debug=True, priority=3.0, logging=True, dry_run=True)
