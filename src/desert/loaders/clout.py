@@ -170,25 +170,40 @@ class Walker(lark.Visitor):
             ):
                 param_or_cmd_id = name_rule(param_or_cmd)
                 observed = counter.get(param_or_cmd_id, 0)
-                if param_or_cmd.required and observed == 0:
+                if observed > param_or_cmd.nargs:
+                    raise TooManyArgs(param_or_cmd)
+                if not ALWAYS_ACCEPT:
+                    if param_or_cmd.required and observed == 0:
 
-                    raise InvalidInput(param_or_cmd, observed)
-                if (
-                    not param_or_cmd.multiple
-                    and param_or_cmd.nargs != -1
-                    and observed != param_or_cmd.nargs
-                    and not (not param_or_cmd.required and observed == 0)
-                ):
-                    raise InvalidInput(param_or_cmd, observed)
+                        raise InvalidInput(param_or_cmd, observed)
+                    if (
+                        not param_or_cmd.multiple
+                        and param_or_cmd.nargs != -1
+                        and observed != param_or_cmd.nargs
+                        and not (not param_or_cmd.required and observed == 0)
+                    ):
+                        raise InvalidInput(param_or_cmd, observed)
 
         return name_rule(command), param_validation_method
 
 
-class InvalidInput(Exception):
+class CloutException(Exception):
+    pass
+
+
+class InvalidInput(CloutException):
     pass
 
 
 class HelpRequested(Exception):
+    pass
+
+
+class TooManyArgs(CloutException):
+    pass
+
+
+class AmbiguousArgs(CloutException):
     pass
 
 
@@ -252,6 +267,7 @@ class Transformer(lark.Transformer):
 
     def make_group_method(self, group):
         def method(parsed):
+            import lark
 
             _group, out = self.process_params(
                 group, [(obj, value) for obj, value in parsed]
@@ -272,6 +288,29 @@ class Transformer(lark.Transformer):
         return name_rule(param), method
 
 
+class RemoveInvalidBranches(lark.Transformer):
+    def __init__(self, *args, group, **kwargs):
+        self.group = group
+        super().__init__(*args, **kwargs)
+        base_commands = list(get_base_commands(self.group))
+        self.all_param_names = {name_rule(p) for c in base_commands for p in c.params}
+
+    def _ambig(self, data):
+
+        trees = [tree for tree in data if check_validity(self.group, tree)]
+        if len(trees) == 1:
+            return trees[0]
+        raise AmbiguousArgs(trees)
+
+
+def check_validity(group, tree):
+    try:
+        Walker(group=group).visit(tree)
+    except TooManyArgs:
+        return False
+    return True
+
+
 @attr.dataclass
 class Parser:
     group: CountingGroup
@@ -288,8 +327,10 @@ class Parser:
     def parse_string(self, s):
         grammar = build_grammar(self.group)
 
-        parser = lark.Lark(grammar, parser="lalr")
+        parser = lark.Lark(grammar, parser="earley", ambiguity="explicit")
         tree = parser.parse(s)
+
+        tree = RemoveInvalidBranches(group=self.group).transform(tree)
 
         if not ALWAYS_ACCEPT:
             Walker(group=self.group).visit(tree)
