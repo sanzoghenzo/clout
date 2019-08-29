@@ -69,27 +69,99 @@ Documentation
 
 https://python-desert.readthedocs.io/
 
+Usage
+=====
 
-Development
-===========
+Desert does three things.
 
-To run the all tests run::
+* Create a serialization schema from a dataclass (or attrs class).
+* Provides utilities for creating objects from several sources, such as using appdirs and toml.
+* Creates a command-line interface for building complex objects.
 
-    tox
+.. code-block:: python
 
-Note, to combine the coverage data from all the tox environments run:
+    #!/usr/bin/env python3
 
-.. list-table::
-    :widths: 10 90
-    :stub-columns: 1
 
-    - - Windows
-      - ::
+    import os
+    import pathlib
+    import typing as t
 
-            set PYTEST_ADDOPTS=--cov-append
-            tox
+    import attr
 
-    - - Other
-      - ::
 
-            PYTEST_ADDOPTS=--cov-append tox
+    from .. import encoders
+    from .. import loaders
+    from .. import runner
+    from ..encoders import toml
+    from ..loaders import appfile
+    from ..loaders import cli
+    from ..loaders import env
+    from ..loaders import multi
+
+
+    @attr.dataclass
+    class DB:
+        host: str
+        port: int
+
+
+    @attr.dataclass
+    class Config:
+        db: DB
+        debug: bool
+        priority: float = attr.ib(
+            default=0,
+            metadata={
+                "desert": {
+                    "cli": dict(param_decls=["--priority"], help="App priority value")
+                }
+            },
+        )
+        logging: bool = True
+        dry_run: bool = False
+
+
+    def dance_(config):
+        print("Dancing with config:", config)
+
+
+    def sing_(config):
+        print("Singing with config:", config)
+
+
+    @attr.dataclass
+    class App:
+        dance: Config = dance_
+        sing: Config = sing_
+
+
+    config_file = pathlib.Path.home() / ".config/myapp/config.toml"
+    config_file.parent.mkdir(exist_ok=True)
+    config_file.write_text(
+        """\
+    [dance]
+    logging = true
+    priority = 3
+    """
+    )
+
+
+    os.environ["MYAPP_APP_DANCE_DRY_RUN"] = "1"
+
+
+    multi = loaders.multi.Multi(
+        [
+            loaders.cli.CLI(),
+            loaders.env.Env(),
+            loaders.appfile.AppFile(encoders.toml.TOML(), filename="config.toml"),
+        ],
+        data=dict(app_name="myapp"),
+    )
+
+    built = multi.build(App)
+    runner.run(built)
+
+
+    # $ myapp app dance   --debug db --host example.com --port 9999
+    # Dancing with config: Config(db=DB(host='example.com', port=9999), debug=True, priority=3.0, logging=True, dry_run=True)
