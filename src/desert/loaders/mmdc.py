@@ -73,7 +73,6 @@ from typing import cast
 
 import attr
 import marshmallow
-import pyrsistent
 import typing_inspect
 
 
