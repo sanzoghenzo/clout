@@ -52,6 +52,8 @@ Full example::
       Schema: ClassVar[Type[Schema]] = Schema # For the type checker
 """
 
+__all__ = ("schema_class", "schema")
+
 import dataclasses
 import datetime
 import decimal
@@ -246,9 +248,9 @@ def class_schema(clazz: type) -> Type[marshmallow.Schema]:
         if field.init
     )
 
-    schema_class = type(clazz.__name__, (_base_schema(clazz),), attributes)
+    class_schema = type(clazz.__name__, (_base_schema(clazz),), attributes)
 
-    return cast(Type[marshmallow.Schema], schema_class)
+    return cast(Type[marshmallow.Schema], class_schema)
 
 
 _native_to_marshmallow: Dict[type, Type[marshmallow.fields.Field]] = {
@@ -405,3 +407,13 @@ def _get_field_default(field: Union[dataclasses.Field, attr.Attribute]):
         return field.default
     else:
         raise TypeError(field)
+
+
+def schema(cls, many=False, **kw):
+    """Build a schema for the class."""
+    return schema_class(cls, **kw)(many=many)
+
+
+def schema_class(cls, **kw):
+    """Build a schema class for the class."""
+    return class_schema(cls, **kw)
