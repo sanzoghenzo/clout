@@ -36,10 +36,10 @@ desert.loaders.env module
    :undoc-members:
    :show-inheritance:
 
-desert.loaders.mmdc module
+desert.loaders.schemas module
 --------------------------
 
-.. automodule:: desert.loaders.mmdc
+.. automodule:: desert.loaders.schemas
    :members:
    :undoc-members:
    :show-inheritance:

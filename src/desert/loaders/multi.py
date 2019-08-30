@@ -6,7 +6,7 @@ import attr
 import marshmallow
 
 from .. import exceptions
-from . import mmdc
+from .. import schemas
 
 
 @attr.dataclass(frozen=True)
@@ -34,7 +34,7 @@ class Multi:
         return DeepChainMap(*[loader.prep(cls) or {} for loader in multi.loaders])
 
     def build(self, cls):
-        schema = mmdc.class_schema(cls)()
+        schema = schemas.class_schema(cls)()
         prepped = self.prep(cls)
         try:
             return schema.load(prepped)

@@ -12,16 +12,15 @@ attrs = "19.1.0"
 lark-parser = "^0.7.3"
 marshmallow = "^3.0"
 typing-inspect = "^0.4.0"
-fire = "^0.2.1"
-environs = "^5.2"
 glom = "^19.2"
 inflection = "^0.3.1"
 typing-extensions = "^3.7"
 importlib_resources = "^1.0"
-sphinx-autodoc-typehints = "^1.7"
+
 
 
 [tool.poetry.dev-dependencies]
+sphinx-autodoc-typehints = "^1.7"
 bump2version = "^0.5.10"
 coverage = "^4.5"
 pytest = "^5.0"

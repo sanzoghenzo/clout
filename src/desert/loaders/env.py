@@ -2,13 +2,12 @@ import os
 import typing as t
 
 import attr
-import environs
 import glom
 import inflection
 import marshmallow
 
+from .. import schemas
 from .. import util
-from . import mmdc
 
 
 @attr.dataclass
@@ -47,7 +46,7 @@ class Env:
         metadata = metadata or {}
         top_name = util.dasherize(typ.__name__)
 
-        schema = mmdc.class_schema(typ)()
+        schema = schemas.class_schema(typ)()
         path_to_field = self.make_path_to_field(schema, path=(top_name,))
 
         d = {}
