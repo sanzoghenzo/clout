@@ -10,7 +10,8 @@ class TOML:
     cls: t.Type = dict
 
     def dumps(self, data, encoder=None) -> str:
-        return encoder.dumps(data, encoder=encoder or self.encoder)
+        encoder = encoder or self.encoder
+        return encoder.dumps(data, encoder=encoder)
 
     def loads(self, text: str, cls=None):
-        return toml.loads(text, _dict=cls or self.cls)
+        return self.encoder.loads(text, _dict=cls or self.cls)
