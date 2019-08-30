@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "desert"
-version = "0.1.0" # PACKAGE_VERSION  (This comment helps bumpversion find the right line.)
+version = "0.1.2" # PACKAGE_VERSION  (This comment helps bumpversion find the right line.)
 description = ""
-authors = ["akb <python-desert@users.noreply.github.com>"]
+authors = ["Desert contributors <python-desert@users.noreply.github.com>"]
 readme = "README.rst"
 
 [tool.poetry.dependencies]
@@ -43,6 +43,7 @@ pytest-clarity = {version = "^0.1.0-alpha.1", allows-prereleases = true}
 pygments = {version = "^2.4", allows-prereleases = true}
 pudb = "^2019.1"
 ipython = "^7.7"
+typing-inspect = "^0.4.0"
 
 [tool.poetry.extras]
 docs = [
