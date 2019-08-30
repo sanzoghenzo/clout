@@ -5,7 +5,7 @@ import appdirs
 import attr
 
 from .. import core
-from . import mmdc
+from .. import schemas
 
 
 @attr.dataclass(frozen=True)
@@ -35,7 +35,7 @@ class AppFile:
             raise
 
     def build(self, cls):
-        schema = mmdc.class_schema(cls)()
+        schema = schemas.class_schema(cls)()
         return schema.load(self.prep(cls))
 
     def set(self, **kw):

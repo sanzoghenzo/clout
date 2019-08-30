@@ -9,9 +9,9 @@ import inflection
 import marshmallow
 import typing_inspect
 
+from .. import schemas
 from .. import util
 from . import clout
-from . import mmdc
 
 
 NO_DEFAULT = "__NO_DEFAULT__"
@@ -205,7 +205,7 @@ class CLI:
         else:
             name = metadata.get("name", util.dasherize(self.app_name))
 
-            schema = mmdc.class_schema(typ)()
+            schema = schemas.class_schema(typ)()
             command = self.make_command_from_schema(schema, name=name)
             command.callback = schema.load
 

@@ -6,7 +6,7 @@ import attr
 import importlib_resources
 
 from .. import core
-from . import mmdc
+from .. import schemas
 
 
 @attr.dataclass(frozen=True)
@@ -28,7 +28,7 @@ class Resource:
         return self.encoder.loads(text)
 
     def build(self, cls):
-        schema = mmdc.class_schema(cls)()
+        schema = schemas.class_schema(cls)()
         return schema.load(self.prep(cls))
 
     def set(self, **kw):
