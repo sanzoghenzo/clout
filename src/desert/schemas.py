@@ -1,6 +1,6 @@
 # MIT License
 
-# Modified from original by
+# Modified for desert from code written by
 
 # Copyright (c) 2019 Ophir LOJKINE
 
