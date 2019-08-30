@@ -58,7 +58,7 @@ def sing_(config):
 @attr.dataclass
 class App:
     dance: Config = dance_
-    sing: Config = sing_
+    sing: Config = lambda c=None: sing_
 
 
 multi = loaders.multi.Multi(
