@@ -67,7 +67,7 @@ Documentation
 =============
 
 
-https://python-desert.readthedocs.io/
+https://desert.readthedocs.io/
 
 Usage
 =====
