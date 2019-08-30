@@ -36,6 +36,14 @@ desert.runner module
    :undoc-members:
    :show-inheritance:
 
+desert.schemas module
+---------------------
+
+.. automodule:: desert.schemas
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 desert.util module
 ------------------
 

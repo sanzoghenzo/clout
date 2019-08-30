@@ -36,18 +36,18 @@ desert.loaders.env module
    :undoc-members:
    :show-inheritance:
 
-desert.loaders.schemas module
---------------------------
-
-.. automodule:: desert.loaders.schemas
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 desert.loaders.multi module
 ---------------------------
 
 .. automodule:: desert.loaders.multi
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+desert.loaders.raw module
+-------------------------
+
+.. automodule:: desert.loaders.raw
    :members:
    :undoc-members:
    :show-inheritance:
