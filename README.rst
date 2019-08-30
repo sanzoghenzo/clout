@@ -1,4 +1,4 @@
-=======
+========
 Overview
 ========
 
@@ -33,9 +33,9 @@ Overview
     :alt: PyPI Package latest release
     :target: https://pypi.org/pypi/desert
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/python-desert/python-desert/v0.1.0.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/python-desert/python-desert/v0.1.2.svg
     :alt: Commits since latest release
-    :target: https://github.com/python-desert/python-desert/compare/v0.1.0...master
+    :target: https://github.com/python-desert/python-desert/compare/v0.1.2...master
 
 .. |wheel| image:: https://img.shields.io/pypi/wheel/desert.svg
     :alt: PyPI Wheel

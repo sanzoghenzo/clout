@@ -12,15 +12,15 @@ from . import mmdc
 @attr.dataclass(frozen=True)
 class Resource:
     encoder: core.Encoder
-    package_name: str = None
+    package: str
     filename: str
-    inherits: t.FrozenSet[str] = attr.ib(default=frozenset({"package_name"}))
+    inherits: t.FrozenSet[str] = attr.ib(default=frozenset({"package"}))
     metadata_key: str = "resource"
     allow_missing_file: bool = False
 
     def prep(self, cls):
         try:
-            text = importlib_resources.read_text(self.package_name, self.filename)
+            text = importlib_resources.read_text(self.package, self.filename)
         except FileNotFoundError:
             if self.allow_missing_file:
                 return {}

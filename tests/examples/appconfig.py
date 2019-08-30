@@ -10,9 +10,12 @@ import desert.loaders.appfile
 import desert.loaders.cli
 import desert.loaders.env
 import desert.loaders.multi
+import desert.loaders.resource
 from desert import encoders
 from desert import loaders
 from desert import runner
+
+from .. import examples
 
 
 @attr.dataclass
@@ -62,6 +65,9 @@ multi = loaders.multi.Multi(
     [
         loaders.cli.CLI(),
         loaders.env.Env(),
+        loaders.resource.Resource(
+            desert.encoders.toml.TOML(), examples, "appconfig.toml"
+        ),
         loaders.appfile.AppFile(
             desert.encoders.toml.TOML(), path=os.environ["TEST_CONFIG_PATH"]
         ),
