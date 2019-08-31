@@ -278,6 +278,8 @@ def class_cli_command(cls):
     return NonStandaloneCommand(
         name="run",
         params=[click.Argument(["args"], type=click.UNPROCESSED, nargs=-1)],
-        callback=lambda args: CLI(app_name="myapp").build(cls, args=args),
+        callback=lambda args: CLI(app_name=util.dasherize(cls.__name__)).build(
+            cls, args=args
+        ),
         context_settings={"ignore_unknown_options": True},
     )

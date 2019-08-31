@@ -6,7 +6,7 @@ def test_non_standalone_cli():
     """Build and run a non-standalone command using click."""
     args = [
         "run",
-        "myapp",
+        "config",
         "--dry-run",
         "--debug",
         "--priority",
