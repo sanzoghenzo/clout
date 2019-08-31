@@ -206,15 +206,18 @@ class CLI:
         if isinstance(cli_metadata, (click.BaseCommand, click.Parameter)):
             command = cli_metadata
         else:
+
             name = metadata.get("name", util.dasherize(self.app_name))
 
             schema = schemas.class_schema(typ)()
             command = self.make_command_from_schema(schema, name=name)
+
             command.callback = schema.load
 
         command = Group(
             name=TOP_LEVEL_NAME,
             commands={c.name: c for c in [command, make_help_command()]},
+            callback=command.callback,
         )
         return command
 
@@ -229,12 +232,14 @@ class CLI:
         command = self.get_command(typ, default, metadata, args)
 
         parser = clout.Parser(command, callback=command.callback, use_defaults=False)
-        cli_args = [TOP_LEVEL_NAME] + (args or self.args or sys.argv[1:])
+        cli_args = (TOP_LEVEL_NAME,) + tuple(args or self.args or sys.argv[1:])
+
         import lark
 
         try:
             result = parser.parse_args(cli_args)
         except (lark.exceptions.ParseError, lark.exceptions.UnexpectedCharacters):
+
             print(command.get_help(click.Context(command)))
             raise
         [value] = result.values()
@@ -247,8 +252,12 @@ class CLI:
         metadata: t.Mapping[str, t.Any] = None,
         args=(),
     ):
+
         command = self.get_command(typ, default, metadata, args)
-        return command.callback(self.prep(typ, default, metadata, args))
+
+        result = command.callback(self.prep(typ, default, metadata, args))
+
+        return result
 
     def set(self, **kw):
         return attr.evolve(self, **kw)
@@ -256,3 +265,19 @@ class CLI:
 
 def identity(*args, **kw):
     return kw
+
+
+class NonStandaloneCommand(click.Command):
+    def main(self, *a, standalone_mode=False, **kw):
+
+        return super().main(*a, standalone_mode=standalone_mode, **kw)
+
+
+def class_cli_command(cls):
+
+    return NonStandaloneCommand(
+        name="run",
+        params=[click.Argument(["args"], type=click.UNPROCESSED, nargs=-1)],
+        callback=lambda args: CLI(app_name="myapp").build(cls, args=args),
+        context_settings={"ignore_unknown_options": True},
+    )
