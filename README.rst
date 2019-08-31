@@ -21,9 +21,9 @@ Desert: dry deserialization
     :alt: Documentation Status
 
 
-.. |travis| image:: https://travis-ci.org/python-desert/desert.svg?branch=master
+.. |travis| image:: https://travis-ci.com/python-desert/desert.svg?branch=master
     :alt: Travis-CI Build Status
-    :target: https://travis-ci.org/python-desert/desert
+    :target: https://travis-ci.com/python-desert/desert
 
 .. |version| image:: https://img.shields.io/pypi/v/desert.svg
     :alt: PyPI Package latest release
