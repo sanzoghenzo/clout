@@ -1,4 +1,5 @@
 import pathlib
+import types
 import typing as t
 
 import appdirs
@@ -12,7 +13,7 @@ from .. import schemas
 @attr.dataclass(frozen=True)
 class Resource:
     encoder: core.Encoder
-    package: str
+    package: types.ModuleType
     filename: str
     inherits: t.FrozenSet[str] = attr.ib(default=frozenset({"package"}))
     metadata_key: str = "resource"
