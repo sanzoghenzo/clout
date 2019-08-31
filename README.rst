@@ -172,6 +172,11 @@ list the loaders in `Multi([...])`. The final missing value, ``dry_run=False``, 
 determined by the default value set on the dataclass.
 
 
+.. code-block:: bash
+
+    $ python example.py
+    Config(DB(host="example.com", port=1234), debug=True, logging=True)
+
 
 Create a command-line interface for building complex nested objects
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
