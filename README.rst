@@ -33,9 +33,9 @@ Desert: Deserialize to Python objects
     :alt: PyPI Package latest release
     :target: https://pypi.org/pypi/desert
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/python-desert/desert/v0.1.2.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/python-desert/desert/v0.1.3.svg
     :alt: Commits since latest release
-    :target: https://github.com/python-desert/desert/compare/v0.1.2...master
+    :target: https://github.com/python-desert/desert/compare/v0.1.3...master
 
 .. |wheel| image:: https://img.shields.io/pypi/wheel/desert.svg
     :alt: PyPI Wheel
