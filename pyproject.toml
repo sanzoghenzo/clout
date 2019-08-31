@@ -46,6 +46,7 @@ pytest-sphinx = "^0.2.2"
 sphinx_autodoc_typehints = "^1.7"
 marshmallow_enum = "^1.5"
 marshmallow_union = "^0.1.10"
+mypy = "^0.720.0"
 
 
 [tool.poetry.extras]
