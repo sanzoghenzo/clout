@@ -6,7 +6,7 @@ authors = ["Desert contributors <python-desert@users.noreply.github.com>"]
 readme = "README.rst"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.5"
 click = "7.0"
 attrs = "19.1.0"
 lark-parser = "^0.7.3"
@@ -16,6 +16,7 @@ glom = "^19.2"
 inflection = "^0.3.1"
 typing-extensions = "^3.7"
 importlib_resources = "^1.0"
+dataclasses = "^0.6.0"
 
 
 
