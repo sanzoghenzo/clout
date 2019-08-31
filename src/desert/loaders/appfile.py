@@ -11,9 +11,11 @@ from .. import schemas
 @attr.dataclass(frozen=True)
 class AppFile:
     encoder: core.Encoder
-    _filename: str = None
-    app_name: str = None
-    _path: t.Optional[pathlib.Path] = None
+    _filename: t.Optional[str] = None
+    app_name: t.Optional[str] = None
+    _path: t.Optional[pathlib.Path] = attr.ib(
+        default=None, converter=attr.converters.optional(pathlib.Path)
+    )
     inherits: t.FrozenSet[str] = attr.ib(default=frozenset({"app_name"}))
     metadata_key: str = "appfile"
     allow_missing_file: bool = False

@@ -57,8 +57,8 @@ def sing_(config):
 
 @attr.dataclass
 class App:
-    dance: Config = dance_
-    sing: Config = lambda c=None: sing_
+    dance: Config = dance_  # type: ignore
+    sing: Config = lambda c=None: sing_  # type: ignore
 
 
 multi = loaders.multi.Multi(
