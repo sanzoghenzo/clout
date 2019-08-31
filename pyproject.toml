@@ -20,7 +20,6 @@ importlib_resources = "^1.0"
 
 
 [tool.poetry.dev-dependencies]
-sphinx-autodoc-typehints = "^1.7"
 bump2version = "^0.5.10"
 coverage = "^4.5"
 pytest = "^5.0"
@@ -44,13 +43,14 @@ pudb = "^2019.1"
 ipython = "^7.7"
 typing-inspect = "^0.4.0"
 pytest-sphinx = "^0.2.2"
+sphinx_autodoc_typehints = "^1.7"
 
 
 [tool.poetry.extras]
 docs = [
     "sphinx",
     "sphinx-rtd-theme",
-    "sphinx-autodoc-typehints",
+    "sphinx_autodoc_typehints",
     "sphinx-click",
     "marshmallow-jsonschema",
     "sphinx-jsonschema",
