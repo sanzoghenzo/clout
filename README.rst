@@ -16,8 +16,8 @@ Desert: Deserialize to Python objects
       - | |version| |wheel| |supported-versions| |supported-implementations|
         | |commits-since|
 
-.. |docs| image:: https://readthedocs.org/projects/python-desert/badge/?style=flat
-    :target: https://readthedocs.org/projects/python-desert
+.. |docs| image:: https://img.shields.io/readthedocs/desert
+    :target: https://desert.readthedocs.org
     :alt: Documentation Status
 
 
