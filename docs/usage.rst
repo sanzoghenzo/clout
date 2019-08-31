@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use desert in a project::
-
-	import desert
+.. include:: ../README.rst
+   :start-after: start-usage
+   :end-before: end-usage
