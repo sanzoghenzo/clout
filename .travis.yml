@@ -14,7 +14,7 @@ matrix:
       dist: xenial
       sudo: required
       env:
-        - TOXENV=coverage,report
+        - TOXENV=coverage,report,codecov
 before_install:
   - python --version
   - uname -a
