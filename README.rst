@@ -21,21 +21,21 @@ Overview
     :alt: Documentation Status
 
 
-.. |travis| image:: https://travis-ci.org/python-desert/python-desert.svg?branch=master
+.. |travis| image:: https://travis-ci.org/python-desert/desert.svg?branch=master
     :alt: Travis-CI Build Status
-    :target: https://travis-ci.org/python-desert/python-desert
+    :target: https://travis-ci.org/python-desert/desert
 
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/python-desert/python-desert?branch=master&svg=true
+.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/python-desert/desert?branch=master&svg=true
     :alt: AppVeyor Build Status
-    :target: https://ci.appveyor.com/project/python-desert/python-desert
+    :target: https://ci.appveyor.com/project/python-desert/desert
 
 .. |version| image:: https://img.shields.io/pypi/v/desert.svg
     :alt: PyPI Package latest release
     :target: https://pypi.org/pypi/desert
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/python-desert/python-desert/v0.1.2.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/python-desert/desert/v0.1.2.svg
     :alt: Commits since latest release
-    :target: https://github.com/python-desert/python-desert/compare/v0.1.2...master
+    :target: https://github.com/python-desert/desert/compare/v0.1.2...master
 
 .. |wheel| image:: https://img.shields.io/pypi/wheel/desert.svg
     :alt: PyPI Wheel
