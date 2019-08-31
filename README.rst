@@ -50,7 +50,7 @@ Desert: dry deserialization
 
 
 
-**Deserialize to Python objects, while staying DRY.**
+
 
 Installation
 ============
@@ -70,6 +70,12 @@ Usage
 
 ..
     start-usage
+
+
+**Deserialize to Python objects, while staying DRY.**
+
+
+Writing code that's dry ("don't repeat youreslf") means it's easier to maintain, less chance of inconsistencies.
 
 Here's a demo of several features.
 
@@ -182,7 +188,7 @@ determined by the default value set on the dataclass.
 .. code-block:: bash
 
     $ python example.py
-    Config(DB(host="example.com", port=1234), debug=True, logging=True)
+    Config(DB(host="example.com", port=1234), debug=True, logging=True, dry_run=False)
 
 
 Command-line interfaces
