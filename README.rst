@@ -10,7 +10,7 @@ Desert: dry deserialization
     * - docs
       - |docs|
     * - tests
-      - | |travis| |appveyor|
+      - | |travis|
         |
     * - package
       - | |version| |wheel| |supported-versions| |supported-implementations|
@@ -24,10 +24,6 @@ Desert: dry deserialization
 .. |travis| image:: https://travis-ci.org/python-desert/desert.svg?branch=master
     :alt: Travis-CI Build Status
     :target: https://travis-ci.org/python-desert/desert
-
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/python-desert/desert?branch=master&svg=true
-    :alt: AppVeyor Build Status
-    :target: https://ci.appveyor.com/project/python-desert/desert
 
 .. |version| image:: https://img.shields.io/pypi/v/desert.svg
     :alt: PyPI Package latest release
