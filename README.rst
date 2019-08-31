@@ -125,9 +125,10 @@ Define some dataclasses, and it becomes easy to load and dump dicts into complex
         print(config)
 
 
-.. code-block:: python
+.. code-block:: bash
 
 
+    $ python example.py
     Config(db=DB(host="example.com", port=1234), debug=True, logging=True, dry_run=False)
 
 Get data from code, environment variables, and config files.
