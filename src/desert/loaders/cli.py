@@ -3,7 +3,6 @@ import sys
 import typing as t
 
 import attr
-import black
 import click
 import inflection
 import marshmallow
@@ -20,6 +19,8 @@ NoneType = type(None)
 
 
 def is_python_syntax(s: str) -> bool:
+    import black
+
     try:
         black.format_str(s, 88)
     except black.InvalidInput:
@@ -37,6 +38,8 @@ def pythonify(obj):
 
 class Debug:
     def __repr__(self):
+        import black
+
         pairs = ", ".join(
             (
                 f"{k}={pythonify(v)}"
