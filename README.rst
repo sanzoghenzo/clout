@@ -1,6 +1,6 @@
-========
-Overview
-========
+=======================================================
+Desert: Deserialize to Python objects
+=======================================================
 
 .. start-badges
 
@@ -52,9 +52,9 @@ Overview
 
 .. end-badges
 
-Deserialize to objects.
 
-* Free software: BSD 2-Clause License
+
+**Deserialize to Python objects, while staying DRY.**
 
 Installation
 ============
