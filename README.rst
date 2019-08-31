@@ -1,5 +1,5 @@
 =======================================================
-Desert: Deserialize to Python objects
+Desert: dry deserialization
 =======================================================
 
 .. start-badges
