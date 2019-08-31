@@ -359,7 +359,7 @@ Why not marshmallow-dataclass_?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It's a useful package, that's why desert integrates features from it! Desert also supports
-attrs, provides loaders for various data files, environment-variable loading,
+attrs_, provides loaders for various data files, environment-variable loading,
 freedesktop-compliant app configuration, and command-line interfaces for complex objects.
 
 
