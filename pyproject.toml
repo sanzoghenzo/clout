@@ -17,6 +17,7 @@ inflection = "^0.3.1"
 typing-extensions = "^3.7"
 importlib_resources = "^1.0"
 dataclasses = "^0.6.0"
+appdirs = "^1.4"
 
 
 
