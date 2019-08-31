@@ -44,6 +44,8 @@ ipython = "^7.7"
 typing-inspect = "^0.4.0"
 pytest-sphinx = "^0.2.2"
 sphinx_autodoc_typehints = "^1.7"
+marshmallow_enum = "^1.5"
+marshmallow_union = "^0.1.10"
 
 
 [tool.poetry.extras]

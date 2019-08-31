@@ -176,20 +176,6 @@ def class_schema(clazz: type) -> Type[marshmallow.Schema]:
     Traceback (most recent call last):
         ...
     marshmallow.exceptions.ValidationError: {'url': ['Not a valid URL.']}
-    >>> @dataclasses.dataclass
-    ... class NeverValid:
-    ...     @marshmallow.validates_schema
-    ...     def validate(self, data, **_):
-    ...         raise marshmallow.ValidationError('never valid')
-    ...
-    >>> class_schema(NeverValid)().load({})
-    Traceback (most recent call last):
-        ...
-    marshmallow.exceptions.ValidationError: {'_schema': ['never valid']}
-    >>> class_schema(None)  # unsupported type
-    Traceback (most recent call last):
-      ...
-    TypeError: None is not a dataclass and cannot be turned into one.
     """
 
     fields: Union[Tuple[dataclasses.Field], Tuple[attr.Attribute]]
@@ -253,7 +239,7 @@ def field_for_schema(
     9
     >>> field_for_schema(Dict[str,str]).__class__
     <class 'marshmallow.fields.Dict'>
-    >>> field_for_schema(str, metadata={"marshmallow_field": marshmallow.fields.Url()}).__class__
+    >>> field_for_schema(str, metadata={'desert': {"marshmallow_field": marshmallow.fields.Url()}}).__class__
     <class 'marshmallow.fields.Url'>
     >>> field_for_schema(Optional[str]).__class__
     <class 'marshmallow.fields.String'>
