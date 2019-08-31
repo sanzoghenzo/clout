@@ -87,7 +87,7 @@ Create a serialization schema from a dataclass (or attrs class)
 Define some dataclasses, and it becomes easy to load and dump dicts into complex structured data.
 
 
-.. code-block:: python
+.. testcode::
 
     from attr import dataclass
 
@@ -109,18 +109,21 @@ Define some dataclasses, and it becomes easy to load and dump dicts into complex
 
 
     # Define some nested data.
-    data = {"db": {"host": "example.com", "port": 1234}, debug: True, logging: True}
+    data = {"db": {"host": "example.com", "port": 1234}, "debug": True, "logging": True}
     # Create a schema.
     schema = desert.schema(Config)
     # Use the schema to load the data into objects.
     config = schema.load(data)
-    # Check the objects.
-    assert config == Config(
-        DB("example.com", 1234), debug=True, logging=True, dry_run=False
-    )
-    # Dump the objects back into raw data.
-    assert schema.dump(config) == data
 
+    # Dump the objects back into raw data.
+    assert schema.dump(config) == dict(data, dry_run=False)
+
+    print(config)
+
+
+.. testoutput::
+
+    Config(db=DB(host='example.com', port=1234), debug=True, logging=True, dry_run=False)
 
 Get data from code, environment variables, and config files.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

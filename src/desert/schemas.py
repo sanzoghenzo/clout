@@ -145,35 +145,6 @@ def class_schema(clazz: type) -> Type[marshmallow.Schema]:
     If you want to use a custom marshmallow field
     (one that has no equivalent python type), you can pass it as the
     ``marshmallow_field`` key in the metadata dictionary.
-    >>> Meters = NewType('Meters', float)
-    >>> @dataclasses.dataclass()
-    ... class Building:
-    ...   height: Optional[Meters]
-    ...   name: str = dataclasses.field(default="anonymous")
-    ...   class Meta:
-    ...     ordered = True
-    ...
-    >>> class_schema(Building) # Returns a marshmallow schema class (not an instance)
-    <class 'marshmallow.schema.Building'>
-    >>> @dataclasses.dataclass()
-    ... class City:
-    ...   name: str = dataclasses.field(metadata={'required':True})
-    ...   best_building: Building # Reference to another dataclasses. A schema will be created for it too.
-    ...   other_buildings: List[Building] = dataclasses.field(default_factory=lambda: [])
-    ...   class Meta:
-    ...     ordered = True
-    ...
-    >>> citySchema = class_schema(City)()
-    >>> city = citySchema.load({"name":"Paris", "best_building": {"name": "Eiffel Tower"}})
-    >>> city
-    City(name='Paris', best_building=Building(height=None, name='Eiffel Tower'), other_buildings=[])
-    >>> citySchema.load({"name":"Paris"})
-    Traceback (most recent call last):
-        ...
-    marshmallow.exceptions.ValidationError: {'best_building': ['Missing data for required field.']}
-    >>> city_json = citySchema.dump(city)
-    >>> city_json # We get an OrderedDict because we specified order = True in the Meta class
-    OrderedDict([('name', 'Paris'), ('best_building', OrderedDict([('height', None), ('name', 'Eiffel Tower')])), ('other_buildings', [])])
     >>> @dataclasses.dataclass()
     ... class Person:
     ...   name: str = dataclasses.field(default="Anonymous")
@@ -197,9 +168,9 @@ def class_schema(clazz: type) -> Type[marshmallow.Schema]:
     C(important=9, unimportant=0)
     >>> @dataclasses.dataclass
     ... class Website:
-    ...  url:str = dataclasses.field(metadata = {
+    ...  url:str = dataclasses.field(metadata = {'desert': {
     ...    "marshmallow_field": marshmallow.fields.Url() # Custom marshmallow field
-    ...  })
+    ...  }})
     ...
     >>> class_schema(Website)().load({"url": "I am not a good URL !"})
     Traceback (most recent call last):
@@ -248,9 +219,9 @@ def class_schema(clazz: type) -> Type[marshmallow.Schema]:
         if field.init
     )
 
-    class_schema = type(clazz.__name__, (_base_schema(clazz),), attributes)
+    cls_schema = type(clazz.__name__, (_base_schema(clazz),), attributes)
 
-    return cast(Type[marshmallow.Schema], class_schema)
+    return cast(Type[marshmallow.Schema], cls_schema)
 
 
 _native_to_marshmallow: Dict[type, Type[marshmallow.fields.Field]] = {
@@ -280,8 +251,6 @@ def field_for_schema(
 
     >>> int_field.default
     9
-    >>> int_field.required
-    True
     >>> field_for_schema(Dict[str,str]).__class__
     <class 'marshmallow.fields.Dict'>
     >>> field_for_schema(str, metadata={"marshmallow_field": marshmallow.fields.Url()}).__class__
@@ -372,7 +341,11 @@ def field_for_schema(
     # Nested dataclasses
     forward_reference = getattr(typ, "__forward_arg__", None)
     nested = forward_reference or class_schema(typ)
-    nested.help = typ.__doc__
+    try:
+        nested.help = typ.__doc__
+    except AttributeError:
+        # TODO need to handle the case where nested is a string forward reference.
+        pass
     return marshmallow.fields.Nested(nested, **metadata)
 
 
