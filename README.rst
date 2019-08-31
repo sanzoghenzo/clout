@@ -168,6 +168,8 @@ In a configuration file at ``~/.config/myapp/config.toml`` we set two variables:
     logging = false
 
 
+The ``~/.config/myapp`` directory is selected in a cross-platform manner, according to the freedesktop standard.
+
 We enable logging with an environment variable:
 
 .. code-block:: bash
@@ -320,3 +322,22 @@ Run the app. The ``Config`` and ``DB`` objects are populated with data from the 
 
 ..
     end-usage
+
+
+Acknowledgements
+~~~~~~~~~~~~~~~~~~~
+
+Desert gets a lot of its power from third-party code.
+
+* The main schema work comes from Marshmallow_ and integrates code from marshmallow-dataclass_.
+* The freedesktop standard location is gotten from appdirs_.
+* The command-line interface uses Click_.
+* The command-line is parsed using a custom parser generator built using Lark_.
+* Of course, none of this would be possible without attrs_.
+
+.. _Marshmallow: https://marshmallow.readthedocs.io
+.. _marshmallow-dataclass: https://github.com/lovasoa/marshmallow_dataclass/
+.. _appdirs: https://github.com/ActiveState/appdirs
+.. _click: http://click.pocoo.org
+.. _lark:  https://lark-parser.readthedocs.io/en/latest/
+.. _attrs: http://attrs.org
