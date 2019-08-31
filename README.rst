@@ -72,6 +72,9 @@ https://desert.readthedocs.io/
 Usage
 =====
 
+..
+    start-usage
+
 Here's a demo of several features.
 
 * Create a serialization schema from a dataclass (or attrs class).
@@ -307,3 +310,7 @@ Run the app. The ``Config`` and ``DB`` objects are populated with data from the 
     $ MYAPP_APP_CONFIG_DRY_RUN=1 appconfig.py myapp dance --debug db --host example.com --port 9999
     Dancing with config:
     Config(db=DB(host='example.com', port=9999), debug=True, priority=3.0, logging=True, dry_run=True)
+
+
+..
+    end-usage
