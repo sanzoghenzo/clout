@@ -247,7 +247,7 @@ Set up the imports.
     import desert.loaders.multi
 
 
-First we define some classes.
+We define some classes for our objects.
 
 .. code-block:: python
 
@@ -342,7 +342,7 @@ Classes allow for structure, documentation, type checking, and methods.
 
 
 Why not ``dataclasses.asdict()`` or ``attr.asdict()``?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 ``asdict()`` is great for getting from objects to dicts. But how do you go the other way?
 The standard answer is ``C(**d)``, but that doesn't recurse into nested objects.
@@ -350,7 +350,8 @@ The standard answer is ``C(**d)``, but that doesn't recurse into nested objects.
 
 
 Why not Marshmallow_ directly?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------------------------------
+
 
 
 Marshmallow is great, that's why we're using it. But using it directly means we have to
@@ -359,7 +360,8 @@ means errors.
 
 
 Why not marshmallow-dataclass_?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------------------------------
+
 
 It's a useful package, that's why desert integrates features from it! Desert supports
 Marshmallow 3, supports attrs_ (down to Python 3.5), provides loaders for various data
