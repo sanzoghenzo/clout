@@ -194,7 +194,7 @@ determined by the default value set on the dataclass.
     Config(DB(host="example.com", port=1234), debug=True, logging=True, dry_run=False)
 
 
-Command-line interfaces
+Command-line interfaces [Experimental]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. note ::
