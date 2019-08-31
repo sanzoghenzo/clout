@@ -328,11 +328,15 @@ class Parser:
 
     def parse_string(self, s):
         grammar = build_grammar(self.group)
-
         parser = lark.Lark(grammar, parser="earley", ambiguity="explicit")
         tree = parser.parse(s)
 
-        tree = RemoveInvalidBranches(group=self.group).transform(tree)
+        try:
+            tree = RemoveInvalidBranches(group=self.group).transform(tree)
+        except AmbiguousArgs:
+            click.echo(
+                "The command arguments were ambiguous. Rearranging terms might help."
+            )
 
         if not ALWAYS_ACCEPT:
             Walker(group=self.group).visit(tree)
