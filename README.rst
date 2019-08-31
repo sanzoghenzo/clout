@@ -324,6 +324,46 @@ Run the app. The ``Config`` and ``DB`` objects are populated with data from the 
     end-usage
 
 
+Why use Desert?
+~~~~~~~~~~~~~~~~~~
+
+Why not plain dicts?
+---------------------
+
+
+Plain dicts are json serializable natively, why do we need classes?
+
+Classes allow for structure, documentation, type checking, and methods.
+
+
+Why not ``dataclasses.asdict()`` or ``attr.asdict()``?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``asdict()`` is great for getting from objects to dicts. But how do you go the other way?
+The standard answer is ``C(**d)``, but that doesn't recurse into nested objects.
+
+
+
+Why not Marshmallow_ directly?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Marshmallow is great, that's why we're using it. But using it directly means we have to
+write a whole extra schema for every class, adding a lot of duplication, and duplication
+means errors.
+
+
+Why not marshmallow-dataclass_?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It's a useful package, that's why desert integrates features from it! Desert also supports
+attrs, provides loaders for various data files, environment-variable loading,
+freedesktop-compliant app configuration, and command-line interfaces for complex objects.
+
+
+
+
+
 Acknowledgements
 ~~~~~~~~~~~~~~~~~~~
 
