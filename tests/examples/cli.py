@@ -1,22 +1,9 @@
 #!/usr/bin/env python3
 
-import os
-import pathlib
-
 import attr
 import click
 
-import desert.encoders.toml
-import desert.loaders.appfile
 import desert.loaders.cli
-import desert.loaders.env
-import desert.loaders.multi
-import desert.loaders.resource
-from desert import encoders
-from desert import loaders
-from desert import runner
-
-from .. import examples
 
 
 @attr.dataclass
