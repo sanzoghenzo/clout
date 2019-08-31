@@ -90,43 +90,45 @@ Create a serialization schema from a dataclass (or attrs class)
 Define some dataclasses, and it becomes easy to load and dump dicts into complex structured data.
 
 
-.. testcode::
-
-    from attr import dataclass
-
-    import desert
+.. code-block:: python
 
 
-    @dataclass
-    class DB:
-        host: str
-        port: int
+        from attr import dataclass
+
+        import desert
 
 
-    @dataclass
-    class Config:
-        db: DB
-        debug: bool
-        logging: bool
-        dry_run: bool = False
+        @dataclass
+        class DB:
+            host: str
+            port: int
 
 
-    # Define some nested data.
-    data = {"db": {"host": "example.com", "port": 1234}, "debug": True, "logging": True}
-    # Create a schema.
-    schema = desert.schema(Config)
-    # Use the schema to load the data into objects.
-    config = schema.load(data)
-
-    # Dump the objects back into raw data.
-    assert schema.dump(config) == dict(data, dry_run=False)
-
-    print(config)
+        @dataclass
+        class Config:
+            db: DB
+            debug: bool
+            logging: bool
+            dry_run: bool = False
 
 
-.. testoutput::
+        # Define some nested data.
+        data = {"db": {"host": "example.com", "port": 1234}, "debug": True, "logging": True}
+        # Create a schema.
+        schema = desert.schema(Config)
+        # Use the schema to load the data into objects.
+        config = schema.load(data)
 
-    Config(db=DB(host='example.com', port=1234), debug=True, logging=True, dry_run=False)
+        # Dump the objects back into raw data.
+        assert schema.dump(config) == dict(data, dry_run=False)
+
+        print(config)
+
+
+.. code-block:: python
+
+
+    Config(db=DB(host="example.com", port=1234), debug=True, logging=True, dry_run=False)
 
 Get data from code, environment variables, and config files.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
