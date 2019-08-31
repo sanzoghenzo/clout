@@ -83,11 +83,11 @@ Here's a demo of several features.
 
 
 
-Create a serialization schema from a dataclass (or attrs class)
+Serialization schemas
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-Define some dataclasses, and it becomes easy to load and dump dicts into complex structured data.
+Define some dataclasses (or attrs classes), and it becomes easy to load and dump dicts into complex structured data.
 
 
 .. code-block:: python
@@ -131,11 +131,14 @@ Define some dataclasses, and it becomes easy to load and dump dicts into complex
     $ python example.py
     Config(db=DB(host="example.com", port=1234), debug=True, logging=True, dry_run=False)
 
-Get data from code, environment variables, and config files.
+
+
+Data sources
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Suppose we have data in environment variables and a configuration file, and the data
-provided in source code is incomplete.
+Get data from code, environment variables, and config files. Suppose we have data in
+environment variables and a configuration file, and the data provided in source code is
+incomplete.
 
 .. code-block:: python
 
@@ -184,7 +187,7 @@ determined by the default value set on the dataclass.
     Config(DB(host="example.com", port=1234), debug=True, logging=True)
 
 
-Create a command-line interface for building complex nested objects
+Command-line interfaces
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. note ::
