@@ -75,7 +75,10 @@ Usage
 **Deserialize to Python objects, while staying DRY.**
 
 
-Writing code that's dry ("don't repeat youreslf") means it's easier to maintain, less chance of inconsistencies.
+Writing code that's dry ("don't repeat youreslf") means less chance of errors. Desert
+helps you write deserialization code that's dry.
+
+
 
 Here's a demo of several features.
 
