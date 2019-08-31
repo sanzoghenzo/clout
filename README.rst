@@ -358,9 +358,10 @@ means errors.
 Why not marshmallow-dataclass_?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-It's a useful package, that's why desert integrates features from it! Desert also supports
-attrs_ (down to Python 3.5), provides loaders for various data files, environment-variable loading,
-freedesktop-compliant app configuration, and command-line interfaces for complex objects.
+It's a useful package, that's why desert integrates features from it! Desert supports
+Marshmallow 3, supports attrs_ (down to Python 3.5), provides loaders for various data
+files, environment-variable loading, freedesktop-compliant app configuration, and
+command-line interfaces for complex objects.
 
 
 
