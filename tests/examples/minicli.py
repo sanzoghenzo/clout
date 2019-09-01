@@ -47,8 +47,9 @@ CONFIG_FILE_DATA = toml.loads(
     pathlib.Path(appdirs.user_config_dir(APP_NAME)).joinpath("config.toml").read_text()
 )
 ENVVAR_DATA = desert.loaders.env.Env(app_name=APP_NAME).prep(Config, name=CONFIG_NAME)
-DEFAULT_MAP = desert.loaders.multi.DeepChainMap(ENVVAR_DATA, CONFIG_FILE_DATA)
-CONTEXT_SETTINGS = dict(default_map=DEFAULT_MAP)
+CONTEXT_SETTINGS = dict(
+    default_map=desert.loaders.multi.DeepChainMap(ENVVAR_DATA, CONFIG_FILE_DATA)
+)
 
 commands = [
     desert.loaders.cli.DesertCommand(
