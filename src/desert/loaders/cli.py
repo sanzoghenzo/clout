@@ -322,7 +322,13 @@ class DesertCommand(click.Command):
         self.app_name = app_name
         context_settings = context_settings or {}
         context_settings["ignore_unknown_options"] = True
-        super().__init__(name=name, *a, **kw, context_settings=context_settings)
+        super().__init__(
+            name=name,
+            *a,
+            **kw,
+            add_help_option=False,
+            context_settings=context_settings,
+        )
         self.params = (params or []) + [
             click.Argument(["args"], type=click.UNPROCESSED, nargs=-1)
         ]

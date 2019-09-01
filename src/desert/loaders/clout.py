@@ -301,9 +301,21 @@ class RemoveInvalidBranches(lark.Transformer):
         trees = [tree for tree in data if check_validity(self.group, tree)]
         if len(trees) == 1:
             return trees[0]
-        if len(trees) > 1:
-            raise AmbiguousArgs(trees)
-        raise InvalidInput(data)
+
+        if len(trees) == 0:
+            raise InvalidInput(data)
+
+        trees = [tree for tree in trees if has_help(tree)]
+
+        if not trees:
+            raise AmbiguousArgs(data)
+
+        # Pick one.
+        return trees[-1]
+
+
+def has_help(tree):
+    return bool(tree.find_data(HELP_COMMAND))
 
 
 def check_validity(group, tree):
@@ -329,6 +341,7 @@ class Parser:
 
     def parse_string(self, s):
         grammar = build_grammar(self.group)
+
         parser = lark.Lark(grammar, parser="earley", ambiguity="explicit")
         tree = parser.parse(s)
 
