@@ -50,13 +50,12 @@ ENVVAR_DATA = desert.loaders.env.Env(app_name=APP_NAME).prep(Config, name=CONFIG
 DEFAULT_MAP = desert.loaders.multi.DeepChainMap(ENVVAR_DATA, CONFIG_FILE_DATA)
 CONTEXT_SETTINGS = dict(default_map=DEFAULT_MAP)
 
-cli = click.Group(
-    commands={
-        "run": desert.loaders.cli.class_cli_command(
-            Config, context_settings=CONTEXT_SETTINGS
-        )
-    }
-)
+commands = [
+    desert.loaders.cli.DesertCommand(
+        "run", type=Config, context_settings=CONTEXT_SETTINGS
+    )
+]
+cli = click.Group(commands={c.name: c for c in commands})
 
 got = cli.main(standalone_mode=False)
 print(got)

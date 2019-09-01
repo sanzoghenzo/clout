@@ -301,27 +301,34 @@ class CLI:
         return attr.evolve(self, **kw)
 
 
-def identity(*args, **kw):
-    return kw
-
-
 class NonStandaloneCommand(click.Command):
     def main(self, *a, standalone_mode=False, **kw):
 
         return super().main(*a, standalone_mode=standalone_mode, **kw)
 
 
-def class_cli_command(cls, app_name=None, **kw):
-    context_settings = {"ignore_unknown_options": True}
-    context_settings.update(kw.pop("context_settings", {}))
-
-    return NonStandaloneCommand(
-        name="run",
-        params=[click.Argument(["args"], type=click.UNPROCESSED, nargs=-1)],
-        callback=lambda args: CLI(
-            app_name=app_name or util.dasherize(cls.__name__),
-            context_settings=context_settings,
-        ).build(cls, args=args),
-        context_settings=context_settings,
+class DesertCommand(click.Command):
+    def __init__(
+        self,
+        name,
+        type,
+        *a,
+        app_name=None,
+        callback=lambda x: x,
+        params=None,
+        context_settings=None,
         **kw,
-    )
+    ):
+        self.app_name = app_name
+        context_settings = context_settings or {}
+        context_settings["ignore_unknown_options"] = True
+        super().__init__(name=name, *a, **kw, context_settings=context_settings)
+        self.params = (params or []) + [
+            click.Argument(["args"], type=click.UNPROCESSED, nargs=-1)
+        ]
+        self.callback = lambda args: callback(
+            CLI(
+                app_name=app_name or util.dasherize(type.__name__),
+                context_settings=context_settings,
+            ).build(type, args=args)
+        )
