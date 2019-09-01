@@ -70,6 +70,8 @@ commands = [
         help="Run the app with given configuration object.",
     )
 ]
+
+# XXX Define `desert.Group()` overriding the constructor to take a `commands` list?
 cli = click.Group(commands={c.name: c for c in commands})
 
 # Run the CLI.
