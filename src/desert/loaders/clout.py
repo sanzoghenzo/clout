@@ -257,6 +257,7 @@ class Transformer(lark.Transformer):
         if self.use_defaults:
             for param in command.params:
                 if param.name not in out and not param.required:
+
                     out[param.name] = param.default
 
         return command, out

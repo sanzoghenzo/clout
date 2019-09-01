@@ -40,11 +40,11 @@ class Env:
     def make_envvar_name(self, path: t.Tuple[str]) -> str:
         return inflection.underscore("_".join((self.app_name,) + path)).upper()
 
-    def prep(self, typ, metadata=None, default=None, env=None):
+    def prep(self, typ, metadata=None, default=None, env=None, name=None):
         # TODO make sure this handles lists correctly.
         # If a field is a list, this should return a list, not a single member.
         metadata = metadata or {}
-        top_name = util.dasherize(typ.__name__)
+        top_name = name or util.dasherize(typ.__name__)
 
         schema = schemas.class_schema(typ)()
         path_to_field = self.make_path_to_field(schema, path=(top_name,))
@@ -60,7 +60,7 @@ class Env:
         nested = make_nested(d)
 
         try:
-            return nested[top_name]
+            return nested
         except KeyError:
             return {}
 

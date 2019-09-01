@@ -4,6 +4,7 @@ import typing as t
 
 import attr
 import click
+import glom
 import inflection
 import marshmallow
 import typing_inspect
@@ -103,32 +104,38 @@ def make_help_command():
 
 
 @functools.singledispatch
-def make_param_from_field(field: marshmallow.fields.Field, data) -> click.Parameter:
+def make_param_from_field(
+    field: marshmallow.fields.Field, data, default
+) -> click.Parameter:
 
     if data:
+
         data = data.copy()
         if "type" not in data:
             data["type"] = MM_TO_CLICK[type(field)]
-        return Option(**data)
+        return Option(show_default=True, **data)
 
     return Option(
         ["--" + field.name],
         type=MarshmallowFieldParam(field),
         required=False,
-        default=field.default,
+        default=default,
+        show_default=True,
     )
 
 
 @make_param_from_field.register(marshmallow.fields.Boolean)
-def _(field: marshmallow.fields.Boolean, data) -> Option:
+def _(field: marshmallow.fields.Boolean, data, default) -> Option:
+
     if data:
-        return Option(**data)
+        return Option(**data, default=default)
 
     return Option(
         [util.dasherize(f"--{field.name}/--no-{field.name}")],
-        default=field.default,
+        default=default,
         required=field.missing == marshmallow.missing,
         is_flag=True,
+        show_default=True,
     )
 
 
@@ -138,26 +145,42 @@ def _(field: marshmallow.fields.Boolean, data) -> Option:
 @make_param_from_field.register(marshmallow.fields.Date)
 @make_param_from_field.register(marshmallow.fields.DateTime)
 @make_param_from_field.register(marshmallow.fields.Raw)
-def _(field, data) -> Option:
+def _(field, data, default) -> Option:
     if data:
         data = data.copy()
-
         if "type" not in data:
             data["type"] = MM_TO_CLICK[type(field)]
-        return Option(**data)
+        return Option(show_default=True, **data, default=default)
     param_type = MM_TO_CLICK[type(field)]
-    return Option(["--" + field.name], type=param_type)
+    return Option(
+        ["--" + field.name], type=param_type, show_default=True, default=default
+    )
+
+
+def extract(mapping, path):
+    for entry in path:
+        mapping = mapping[entry]
+    return mapping
+
+
+def get_default(field, path, default_map):
+
+    try:
+        return extract(default_map, path)
+    except KeyError:
+        return field.default
 
 
 @attr.dataclass(frozen=True)
 class CLI:
+    context_settings: t.Dict[str, t.Any] = attr.ib(factory=dict)
     inherits: t.FrozenSet[str] = frozenset({"app_name"})
     metadata_key: str = "cli"
     args: t.List[str] = attr.ib(factory=list)
-    app_name: str = None
+    app_name: t.Optional[str] = None
 
     def make_command_from_schema(
-        self, schema: marshmallow.Schema, name: str
+        self, schema: marshmallow.Schema, path: t.Sequence[str]
     ) -> click.BaseCommand:
         params = []
         commands = []
@@ -165,11 +188,20 @@ class CLI:
         for field in schema.fields.values():
             if isinstance(field, marshmallow.fields.Nested):
                 commands.append(
-                    self.make_command_from_schema(field.schema, name=field.name)
+                    self.make_command_from_schema(
+                        field.schema, path=path + (field.name,)
+                    )
                 )
             elif isinstance(field, marshmallow.fields.Field):
                 user_specified = field.metadata.get("cli")
-                param = make_param_from_field(field, user_specified)
+                default = get_default(
+                    field,
+                    path=path + (field.name,),
+                    default_map=self.context_settings.get("default_map", {}),
+                )
+
+                param = make_param_from_field(field, user_specified, default=default)
+
                 params.append(param)
             else:
                 raise TypeError(field)
@@ -179,16 +211,22 @@ class CLI:
         help = getattr(schema, "help", None)
         if commands:
             return Group(
-                name=name,
+                name=path[-1],
                 commands={c.name: c for c in commands},
                 params=params,
                 chain=True,
                 result_callback=lambda *a, **kw: (a, kw),
                 help=help,
                 short_help=help,
+                context_settings=self.context_settings,
             )
         return Command(
-            name=name, params=params, callback=identity, help=help, short_help=help
+            name=path[-1],
+            params=params,
+            callback=identity,
+            help=help,
+            short_help=help,
+            context_settings=self.context_settings,
         )
 
     def get_command(
@@ -210,7 +248,7 @@ class CLI:
             name = metadata.get("name", util.dasherize(self.app_name))
 
             schema = schemas.class_schema(typ)()
-            command = self.make_command_from_schema(schema, name=name)
+            command = self.make_command_from_schema(schema, path=(name,))
 
             command.callback = schema.load
 
@@ -231,7 +269,7 @@ class CLI:
 
         command = self.get_command(typ, default, metadata, args)
 
-        parser = clout.Parser(command, callback=command.callback, use_defaults=False)
+        parser = clout.Parser(command, callback=command.callback, use_defaults=True)
         cli_args = (TOP_LEVEL_NAME,) + tuple(args or self.args or sys.argv[1:])
 
         import lark
@@ -263,23 +301,34 @@ class CLI:
         return attr.evolve(self, **kw)
 
 
-def identity(*args, **kw):
-    return kw
-
-
 class NonStandaloneCommand(click.Command):
     def main(self, *a, standalone_mode=False, **kw):
 
         return super().main(*a, standalone_mode=standalone_mode, **kw)
 
 
-def class_cli_command(cls):
-
-    return NonStandaloneCommand(
-        name="run",
-        params=[click.Argument(["args"], type=click.UNPROCESSED, nargs=-1)],
-        callback=lambda args: CLI(app_name=util.dasherize(cls.__name__)).build(
-            cls, args=args
-        ),
-        context_settings={"ignore_unknown_options": True},
-    )
+class DesertCommand(click.Command):
+    def __init__(
+        self,
+        name,
+        type,
+        *a,
+        app_name=None,
+        callback=lambda x: x,
+        params=None,
+        context_settings=None,
+        **kw,
+    ):
+        self.app_name = app_name
+        context_settings = context_settings or {}
+        context_settings["ignore_unknown_options"] = True
+        super().__init__(name=name, *a, **kw, context_settings=context_settings)
+        self.params = (params or []) + [
+            click.Argument(["args"], type=click.UNPROCESSED, nargs=-1)
+        ]
+        self.callback = lambda args: callback(
+            CLI(
+                app_name=app_name or util.dasherize(type.__name__),
+                context_settings=context_settings,
+            ).build(type, args=args)
+        )
