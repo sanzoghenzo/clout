@@ -6,6 +6,7 @@ import importlib_resources
 import tests.examples
 
 
+@pytest.mark.xfail
 def test_appconfig(tmp_path):
     """Run the appconfig example.
 
