@@ -43,10 +43,11 @@ class Config:
 
 APP_NAME = "myapp"
 CONFIG_NAME = "config"
-CONFIG_FILE_DATA = toml.loads(
-    pathlib.Path(appdirs.user_config_dir(APP_NAME)).joinpath("config.toml").read_text()
-)
+CONFIG_FILE_PATH = pathlib.Path(appdirs.user_config_dir(APP_NAME)) / "config.toml"
+CONFIG_FILE_DATA = toml.loads(CONFIG_FILE_PATH.read_text())
 ENVVAR_DATA = desert.loaders.env.Env(app_name=APP_NAME).prep(Config, name=CONFIG_NAME)
+
+
 CONTEXT_SETTINGS = dict(
     default_map=desert.loaders.multi.DeepChainMap(ENVVAR_DATA, CONFIG_FILE_DATA)
 )
