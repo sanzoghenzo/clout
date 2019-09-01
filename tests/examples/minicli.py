@@ -43,15 +43,20 @@ class Config:
 
 APP_NAME = "myapp"
 CONFIG_NAME = "config"
+
+# Read config file.
 CONFIG_FILE_PATH = pathlib.Path(appdirs.user_config_dir(APP_NAME)) / "config.toml"
 CONFIG_FILE_DATA = toml.loads(CONFIG_FILE_PATH.read_text())
+
+# Read from environment_variables prefixed `MYAPP_CONFIG_`.
 ENVVAR_DATA = desert.loaders.env.Env(app_name=APP_NAME).prep(Config, name=CONFIG_NAME)
 
-
+# Combine config file and envvars to set CLI defaults.
 CONTEXT_SETTINGS = dict(
     default_map=desert.loaders.multi.DeepChainMap(ENVVAR_DATA, CONFIG_FILE_DATA)
 )
 
+# Define the CLI.
 commands = [
     desert.loaders.cli.DesertCommand(
         "run", type=Config, context_settings=CONTEXT_SETTINGS
@@ -59,6 +64,7 @@ commands = [
 ]
 cli = click.Group(commands={c.name: c for c in commands})
 
+# Run the CLI.
 got = cli.main(standalone_mode=False)
 print(got)
 
