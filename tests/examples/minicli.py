@@ -79,6 +79,7 @@ print(got)
 # $ cat ~/.config/myapp/config.toml
 # [config]
 # dry_run=true
+
 # Run the script with an environment variable set.
 # $ MYAPP_CONFIG_PRIORITY=7 minicli run config --debug  user --name Alice db --host example.com --port 9999 user --name Bob
 # Config(db=DB(host='example.com', port=9999, user=User(name='Bob')), debug=True, user=User(name='Alice'), priority=7.0, logging=True, dry_run=True)
