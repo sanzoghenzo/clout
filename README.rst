@@ -87,180 +87,41 @@ Here's a demo of several features.
 * Create a command-line interface for building complex nested objects.
 
 
+Define the objects we need:
 
-Serialization schemas
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. code-block::
 
+    #!/usr/bin/env python3
 
-Define some dataclasses (or attrs classes), and it becomes easy to load and dump dicts into complex structured data.
-
-
-.. code-block:: python
-
-
-        from attr import dataclass
-
-        import desert
-
-
-        @dataclass
-        class DB:
-            host: str
-            port: int
-
-
-        @dataclass
-        class Config:
-            db: DB
-            debug: bool
-            logging: bool
-            dry_run: bool = False
-
-
-        # Define some nested data.
-        data = {"db": {"host": "example.com", "port": 1234}, "debug": True, "logging": True}
-        # Create a schema.
-        schema = desert.schema(Config)
-        # Use the schema to load the data into objects.
-        config = schema.load(data)
-
-        # Dump the objects back into raw data.
-        assert schema.dump(config) == dict(data, dry_run=False)
-
-        print(config)
-
-
-.. code-block:: bash
-
-
-    $ python example.py
-    Config(db=DB(host="example.com", port=1234), debug=True, logging=True, dry_run=False)
-
-
-
-Data sources
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Get data from code, environment variables, and config files. Suppose we have data in
-environment variables and a configuration file, and the data provided in source code is
-incomplete.
-
-.. code-block:: python
-
-    incomplete_data = {"db": {"host": "example.com", "port": 1234}}
-
-    multi = loaders.multi.Multi(
-        [
-            loaders.raw.Raw(incomplete_data),
-            loaders.env.Env(),
-            loaders.appfile.AppFile(desert.encoders.toml.TOML(), filename="config.toml"),
-        ],
-        data=dict(app_name="myapp"),
-    )
-
-    built = multi.build(App)
-
-    assert built == Config(DB(host="example.com", port=1234), debug=True, logging=True)
-    print(built)
-
-
-In a configuration file at ``~/.config/myapp/config.toml`` we set two variables:
-
-.. code-block:: toml
-
-    [config]
-    debug = true
-    logging = false
-
-
-The ``~/.config/myapp`` directory is selected in a cross-platform manner, according to the freedesktop standard.
-
-We enable logging with an environment variable:
-
-.. code-block:: bash
-
-    export MYAPP_CONFIG_LOGGING=1
-
-Now running the program, we see all of the values have been set, and that the environment
-variable's value for ``logging`` (True) has overridden the configuration file's value for
-that variable (False). This precedence ordering is determined by the order in which you
-list the loaders in `Multi([...])`. The final missing value, ``dry_run=False``, is
-determined by the default value set on the dataclass.
-
-
-.. code-block:: bash
-
-    $ python example.py
-    Config(DB(host="example.com", port=1234), debug=True, logging=True, dry_run=False)
-
-
-Command-line interfaces [Experimental]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. note ::
-
-    The command-line API is **experimental** and subject to change without notice.
-
-
-
-As discussed above, Desert lets us create complex nested objects using raw data,
-environment variables, and configuration files. We can create complex nested objects from
-the command line.
-
-For example,
-
-
-.. code-block:: bash
-
-    $ myapp config --no-logging --dry-run db --host=example.com --port=1234
-
-will create a Python object like this:
-
-.. code-block:: python
-
-    Config(db=DB(host="example.com", port=1234), logging=False, dry_run=True)
-
-
-
-A command-line demo
---------------------------
-
-
-Set up the imports.
-
-.. code-block:: python
-
-
-    import os
     import pathlib
-    import typing as t
 
+    import appdirs
     import attr
+    import click
+    import toml
 
-    from desert import encoders
-    from desert import loaders
-    from desert import runner
-    import desert.encoders.toml
-    import desert.loaders.appfile
     import desert.loaders.cli
     import desert.loaders.env
     import desert.loaders.multi
 
 
-We define some classes for our objects.
+    @attr.dataclass
+    class User:
+        name: str
 
-.. code-block:: python
 
     @attr.dataclass
     class DB:
         host: str
         port: int
+        user: User
 
 
     @attr.dataclass
     class Config:
         db: DB
         debug: bool
+        user: User
         priority: float = attr.ib(
             default=0,
             metadata={
@@ -273,57 +134,63 @@ We define some classes for our objects.
         dry_run: bool = False
 
 
-Define the command-line interface.
+Get the defaults from environment variables and a configuration file.
 
 .. code-block:: python
 
-    def dance_(config):
-        print("Dancing with config:\n", config)
+    APP_NAME = "myapp"
+    CONFIG_NAME = "config"
 
+    # Read config file.
+    CONFIG_FILE_PATH = pathlib.Path(appdirs.user_config_dir(APP_NAME)) / "config.toml"
+    CONFIG_FILE_DATA = toml.loads(CONFIG_FILE_PATH.read_text())
 
-    def sing_(config):
-        print("Singing with config:\n", config)
+    # Read from environment_variables prefixed `MYAPP_CONFIG_`.
+    # XXX How to make this simpler?
+    # Provide a `prefix=` argument? If it's `desert.load_env(Config, prefix=)`, then how to
+    # provide the app name and config name separately? Is that useful?
+    ENVVAR_DATA = desert.loaders.env.Env(app_name=APP_NAME).prep(Config, name=CONFIG_NAME)
 
-
-    @attr.dataclass
-    class App:
-        dance: Config = dance_
-        sing: Config = lambda c=None: sing_
-
-
-    multi = loaders.multi.Multi(
-        [
-            loaders.cli.CLI(),
-            loaders.env.Env(),
-            loaders.appfile.AppFile(desert.encoders.toml.TOML(), filename="config.toml"),
-        ],
-        data=dict(app_name="myapp"),
+    # Combine config file and envvars to set CLI defaults.
+    # XXX make a function `desert.combine()`?
+    CONTEXT_SETTINGS = dict(
+        default_map=desert.loaders.multi.DeepChainMap(ENVVAR_DATA, CONFIG_FILE_DATA)
     )
 
-    built = multi.build(App)
-    runner.run(built)
+Define the CLI:
+
+.. code-block:: python
+
+    # XXX Should it just be called `desert.Command()`?
+    commands = [
+        desert.loaders.cli.DesertCommand(
+            "run",
+            type=Config,
+            context_settings=CONTEXT_SETTINGS,
+            help="Run the app with given configuration object.",
+        )
+    ]
+    cli = click.Group(commands={c.name: c for c in commands})
 
 
+Run the CLI.
 
-Create a configuration file for the demo.
-
-
-.. code-block:: toml
+.. code-block:: python
 
 
-    [dance]
-    logging = true
-    priority = 3
+    got = cli.main(standalone_mode=False)
+    print(got)
 
-
-Run the app. The ``Config`` and ``DB`` objects are populated with data from the CLI, envvars, and config file, in the order specified in ``Multi()`` above.
 
 .. code-block:: bash
 
-    $ MYAPP_APP_CONFIG_DRY_RUN=1 appconfig.py myapp dance --debug db --host example.com --port 9999
-    Dancing with config:
-    Config(db=DB(host='example.com', port=9999), debug=True, priority=3.0, logging=True, dry_run=True)
+    $ cat ~/.config/myapp/config.toml
+    [config]
+    dry_run=true
 
+    # Run the script with an environment variable set.
+    $ MYAPP_CONFIG_PRIORITY=7 minicli run config --debug  user --name Alice db --host example.com --port 9999 user --name Bob
+    Config(db=DB(host='example.com', port=9999, user=User(name='Bob')), debug=True, user=User(name='Alice'), priority=7.0, logging=True, dry_run=True)
 
 ..
     end-usage
@@ -342,6 +209,7 @@ Classes allow for structure, documentation, type checking, and methods.
 
 
 Why not ``dataclasses.asdict()`` or ``attr.asdict()``?
+---------------------------------------------------------
 
 
 ``asdict()`` is great for getting from objects to dicts. But how do you go the other way?
