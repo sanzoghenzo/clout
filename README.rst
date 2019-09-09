@@ -89,7 +89,7 @@ Here's a demo of several features.
 
 Define the objects we need:
 
-.. code-block::
+.. code-block:: python
 
     #!/usr/bin/env python3
 
