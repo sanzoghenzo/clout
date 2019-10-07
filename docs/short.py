@@ -18,4 +18,5 @@ class Config:
 
 cli = desert.Command("run", type=Config)
 
-print(cli.build())
+if __name__ == "__main__":
+    print(cli.build())

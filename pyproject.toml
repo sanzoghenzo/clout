@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "desert"
-version = "0.1.7" # PACKAGE_VERSION  (This comment helps bumpversion find the right line.)
-description = ""
+version = "0.1.7.post1" # PACKAGE_VERSION  (This comment helps bumpversion find the right line.)
+description = "Use dataclasses without repeating yourself"
 authors = ["Desert contributors <python-desert@users.noreply.github.com>"]
 readme = "README.rst"
 

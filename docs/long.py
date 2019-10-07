@@ -78,8 +78,10 @@ cli = click.Group(commands={c.name: c for c in commands})
 
 # Run the CLI.
 # XXX This is a bit of boilerplate. Should it get a wrapper function?
-got = cli.main(standalone_mode=False)
-print(got)
+
+if __name__ == "__main__":
+    print(cli.main(standalone_mode=False))
+
 
 # $ cat ~/.config/myapp/config.toml
 # [config]
