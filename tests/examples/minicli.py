@@ -7,9 +7,7 @@ import attr
 import click
 import toml
 
-import desert.loaders.cli
-import desert.loaders.env
-import desert.loaders.multi
+import desert
 
 
 @attr.dataclass
@@ -76,6 +74,7 @@ commands = [
 cli = click.Group(commands={c.name: c for c in commands})
 
 # Run the CLI.
+# XXX This is a bit of boilerplate. Should it get a wrapper function?
 got = cli.main(standalone_mode=False)
 print(got)
 
