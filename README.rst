@@ -1,5 +1,5 @@
 =======================================================
-Desert: dry deserialization
+Desert: Build command-line interfaces from dataclasses
 =======================================================
 
 .. start-badges
@@ -72,11 +72,8 @@ Usage
     start-usage
 
 
-**Deserialize to Python objects, while staying DRY.**
-
-
 Writing code that's dry ("don't repeat youreslf") means less chance of errors. Desert
-helps you write deserialization code that's dry.
+helps you write code that's dry.
 
 
 Quickstart
