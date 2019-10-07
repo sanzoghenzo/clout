@@ -1,6 +1,7 @@
 import collections
 import functools
 import math
+import shlex
 import subprocess
 import sys
 import typing as t
@@ -8,6 +9,8 @@ import typing as t
 import attr
 import click
 import lark
+
+import desert.exceptions
 
 from .. import util
 
@@ -326,6 +329,25 @@ def check_validity(group, tree):
     return True
 
 
+def find_missing_input(parser, s: str) -> t.Optional[t.List[str]]:
+
+    words = shlex.split(s)
+    try:
+        parser.parse(subprocess.list2cmdline(words))
+    except lark.exceptions.ParseError:
+        pass
+    else:
+        return None
+
+    while True:
+        try:
+            parser.parse(subprocess.list2cmdline(words[:-1]))
+        except lark.exceptions.ParseError:
+            words = words[:-1]
+        else:
+            return words
+
+
 @attr.dataclass
 class Parser:
     group: CountingGroup
@@ -345,9 +367,9 @@ class Parser:
         parser = lark.Lark(grammar, parser="earley", ambiguity="explicit")
         try:
             tree = parser.parse(s)
-        except Exception as e:
-            # import pudb; pudb.set_trace()
-            raise
+        except lark.exceptions.ParseError as e:
+            found = find_missing_input(parser, s)
+            raise desert.exceptions.MissingInput(self.group, s, found) from e
 
         try:
             tree = RemoveInvalidBranches(group=self.group).transform(tree)

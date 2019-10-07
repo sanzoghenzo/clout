@@ -10,6 +10,8 @@ import inflection
 import marshmallow
 import typing_inspect
 
+import desert.exceptions
+
 from .. import schemas
 from .. import util
 from . import clout
@@ -114,6 +116,7 @@ def make_param_from_field(
         data = data.copy()
         if "type" not in data:
             data["type"] = MM_TO_CLICK[type(field)]
+
         return Option(show_default=True, **data)
 
     return Option(
@@ -289,6 +292,9 @@ class CLI:
                 raise
             else:
                 sys.exit(1)
+        except desert.exceptions.MissingInput as e:
+            result = parser.parse_args(e.found + ["--help"])
+
         [value] = result.values()
         return value
 
@@ -312,7 +318,6 @@ class CLI:
 
 class NonStandaloneCommand(click.Command):
     def main(self, *a, standalone_mode=False, **kw):
-
         return super().main(*a, standalone_mode=standalone_mode, **kw)
 
 
