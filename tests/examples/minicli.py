@@ -55,7 +55,7 @@ else:
 
 
 # Read from environment_variables prefixed `MYAPP_`.
-ENVVAR_DATA = desert.load_env(Config, prefix=f"{APP_NAME}_")
+ENVVAR_DATA = desert.load_env(Config, prefix=f"{APP_NAME}")
 
 # Combine config file and envvars to set CLI defaults.
 # XXX make a function `desert.combine()`?
