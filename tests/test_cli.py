@@ -2,7 +2,7 @@ import subprocess
 import sys
 
 
-def test_non_standalone_cli():
+def test_long_example():
     """Build and run a non-standalone command using click."""
     args = [
         "run",
@@ -24,12 +24,24 @@ def test_non_standalone_cli():
         "Bob",
     ]
     proc = subprocess.run(
-        [sys.executable, "-m", "tests.examples.cli"] + args,
-        capture_output=True,
-        check=False,
+        [sys.executable, "docs/long.py"] + args, capture_output=True, check=False
     )
     assert proc.returncode == 0, proc.stderr.decode()
 
     output = proc.stdout.decode()
     expected = "Config(db=DB(host='example.com', port=9999, user=User(name='Bob')), debug=True, user=User(name='Alice'), priority=3.0, logging=True, dry_run=True)\n"
+    assert output == expected
+
+
+def test_short_example():
+    """Build and run a short command using click."""
+    args = ["config", "--dry-run", "db", "--host", "example.com", "--port", "9999"]
+    proc = subprocess.run(
+        [sys.executable, "docs/short.py"] + args, capture_output=True, check=False
+    )
+    assert proc.returncode == 0, proc.stderr.decode()
+
+    output = proc.stdout.decode()
+    expected = "Config(db=DB(host='example.com', port=9999), dry_run=True)\n"
+
     assert output == expected
