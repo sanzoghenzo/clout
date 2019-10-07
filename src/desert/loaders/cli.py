@@ -352,3 +352,6 @@ class Command(click.Command):
                 context_settings=context_settings,
             ).build(type, args=args)
         )
+
+    def build(self, *a, **kw):
+        return self.main(standalone_mode=False)
