@@ -7,6 +7,7 @@ import attr
 import click
 import toml
 
+# XXX Should this be renamed to something like `click_dataclass`?
 import desert
 
 
