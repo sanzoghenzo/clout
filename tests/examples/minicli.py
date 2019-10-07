@@ -54,8 +54,10 @@ else:
     CONFIG_FILE_DATA = toml.loads(config_file_text)
 
 
-# Read from environment_variables prefixed `MYAPP_`.
+# Read from environment_variables prefixed `MYAPP_`,
+# such as MYAPP_CONFIG_PRIORITY=10.
 ENVVAR_DATA = desert.load_env(Config, prefix=f"{APP_NAME}")
+
 
 # Combine config file and envvars to set CLI defaults.
 # XXX make a function `desert.combine()`?
