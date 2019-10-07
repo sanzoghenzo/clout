@@ -343,7 +343,11 @@ class Parser:
         grammar = build_grammar(self.group)
 
         parser = lark.Lark(grammar, parser="earley", ambiguity="explicit")
-        tree = parser.parse(s)
+        try:
+            tree = parser.parse(s)
+        except Exception as e:
+            # import pudb; pudb.set_trace()
+            raise
 
         try:
             tree = RemoveInvalidBranches(group=self.group).transform(tree)

@@ -3,6 +3,7 @@ import subprocess
 import sys
 
 import importlib_resources
+import pytest
 import tests.examples
 
 

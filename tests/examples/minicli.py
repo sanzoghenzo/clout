@@ -42,28 +42,31 @@ class Config:
 
 
 APP_NAME = "myapp"
-CONFIG_NAME = "config"
+
 
 # Read config file.
-CONFIG_FILE_PATH = pathlib.Path(appdirs.user_config_dir(APP_NAME)) / "config.toml"
-CONFIG_FILE_DATA = toml.loads(CONFIG_FILE_PATH.read_text())
+# XXX This is a lot of boilerplate. Should this have a wrapper function?
+config_file_path = pathlib.Path(appdirs.user_config_dir(APP_NAME)) / "config.toml"
+try:
+    config_file_text = config_file_path.read_text()
+except FileNotFoundError:
+    CONFIG_FILE_DATA = {}
+else:
+    CONFIG_FILE_DATA = toml.loads(config_file_text)
 
-# Read from environment_variables prefixed `MYAPP_CONFIG_`.
-# XXX How to make this simpler?
-# Provide a `prefix=` argument? If it's `desert.load_env(Config, prefix=)`, then how to
-# provide the app name and config name separately? Is that useful?
-ENVVAR_DATA = desert.loaders.env.Env(app_name=APP_NAME).prep(Config, name=CONFIG_NAME)
+
+# Read from environment_variables prefixed `MYAPP_`.
+ENVVAR_DATA = desert.load_env(Config, prefix=f"{APP_NAME}_")
 
 # Combine config file and envvars to set CLI defaults.
 # XXX make a function `desert.combine()`?
-CONTEXT_SETTINGS = dict(
-    default_map=desert.loaders.multi.DeepChainMap(ENVVAR_DATA, CONFIG_FILE_DATA)
-)
+# XXX Is it safe to combine like this? What if you *wanted* to have an empty dict as the value,
+# but it got replaced with a lower-priority value?
+CONTEXT_SETTINGS = dict(default_map=desert.DeepChainMap(ENVVAR_DATA, CONFIG_FILE_DATA))
 
 # Define the CLI.
-# XXX Should it just be called `desert.Command()`?
 commands = [
-    desert.loaders.cli.DesertCommand(
+    desert.Command(
         "run",
         type=Config,
         context_settings=CONTEXT_SETTINGS,

@@ -16,6 +16,7 @@ class Env:
     metadata_key: str = "env"
     inherits: t.List[str] = frozenset({"app_name"})
     env: t.Dict[str, t.Any] = attr.ib(factory=dict)
+    prefix: str = ""
 
     def make_path_to_field(
         self, schema: marshmallow.Schema, path=()
@@ -38,7 +39,8 @@ class Env:
         return d
 
     def make_envvar_name(self, path: t.Tuple[str]) -> str:
-        return inflection.underscore("_".join((self.app_name,) + path)).upper()
+        prefix = self.prefix if self.prefix else self.app_name
+        return inflection.underscore("_".join((prefix,) + path)).upper()
 
     def prep(self, typ, metadata=None, default=None, env=None, name=None):
         # TODO make sure this handles lists correctly.
@@ -76,3 +78,7 @@ def make_nested(path_to_value: t.Dict[t.Tuple, t.Any]) -> dict:
         func = dict
         glom.assign(d, ".".join(path), value, missing=func)
     return d
+
+
+def load_env(type, prefix=""):
+    return Env(prefix=prefix).prep(type)

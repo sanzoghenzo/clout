@@ -1,4 +1,5 @@
 import functools
+import os
 import sys
 import typing as t
 
@@ -65,11 +66,11 @@ class Group(Debug, clout.CountingGroup):
                 raise
 
 
-class Command(Debug, clout.CountingCommand):
+class DebuggableCommand(Debug, clout.CountingCommand):
     def __call__(self, *args, **kwargs):
         try:
             return super().__call__(*args, **kwargs)
-        except SystemExit:
+        except SystemExit as e:
             if e.code != 0:
                 raise
 
@@ -100,7 +101,7 @@ MM_TO_CLICK = {
 
 
 def make_help_command():
-    return Command(name="--help", hidden=True)
+    return DebuggableCommand(name="--help", hidden=True)
 
 
 @functools.singledispatch
@@ -200,7 +201,12 @@ class CLI:
                     default_map=self.context_settings.get("default_map", {}),
                 )
 
-                param = make_param_from_field(field, user_specified, default=default)
+                if isinstance(field.metadata.get("cli"), click.Parameter):
+                    param = field.metadata["cli"]
+                else:
+                    param = make_param_from_field(
+                        field, user_specified, default=default
+                    )
 
                 params.append(param)
             else:
@@ -220,7 +226,7 @@ class CLI:
                 short_help=help,
                 context_settings=self.context_settings,
             )
-        return Command(
+        return DebuggableCommand(
             name=path[-1],
             params=params,
             callback=identity,
@@ -279,7 +285,10 @@ class CLI:
         except (lark.exceptions.ParseError, lark.exceptions.UnexpectedCharacters):
 
             print(command.get_help(click.Context(command)))
-            raise
+            if os.environ.get("CLI_SHOW_TRACEBACK"):
+                raise
+            else:
+                sys.exit(1)
         [value] = result.values()
         return value
 
@@ -307,7 +316,7 @@ class NonStandaloneCommand(click.Command):
         return super().main(*a, standalone_mode=standalone_mode, **kw)
 
 
-class DesertCommand(click.Command):
+class Command(click.Command):
     def __init__(
         self,
         name,
