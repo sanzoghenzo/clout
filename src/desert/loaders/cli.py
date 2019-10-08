@@ -324,8 +324,8 @@ class NonStandaloneCommand(click.Command):
 class Command(click.Command):
     def __init__(
         self,
-        name,
-        type,
+        name=None,
+        type=None,
         *a,
         app_name=None,
         callback=lambda x: x,
@@ -333,6 +333,8 @@ class Command(click.Command):
         context_settings=None,
         **kw,
     ):
+        if type is None:
+            raise TypeError("missing `type` argument")
         self.app_name = app_name
         context_settings = context_settings or {}
         context_settings["ignore_unknown_options"] = True
