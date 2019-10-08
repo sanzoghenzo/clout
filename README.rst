@@ -75,7 +75,7 @@ Usage
     start-usage
 
 
-Writing code that's dry ("don't repeat youreslf") means less chance of errors. Desert
+Writing code that's dry ("don't repeat yourself") means less chance of errors. Desert
 helps you write code that's dry.
 
 
