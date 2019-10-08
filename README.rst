@@ -13,7 +13,10 @@ Desert: Build command-line interfaces from dataclasses
       - | |travis|
         |
     * - package
-      - | |version| |wheel| |supported-versions| |supported-implementations|
+      - | |version|
+        | |wheel|
+        | |supported-versions|
+        | |supported-implementations|
         | |commits-since|
 
 .. |docs| image:: https://img.shields.io/readthedocs/desert
