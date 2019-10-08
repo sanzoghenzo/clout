@@ -53,26 +53,9 @@ Desert: Build command-line interfaces from dataclasses
 
 
 
-
-
-Installation
-============
-
-::
-
-    pip install desert
-
-Documentation
-=============
-
-
-https://desert.readthedocs.io/
-
-Usage
-=====
-
 ..
     start-usage
+
 
 
 Writing code that's dry ("don't repeat yourself") means less chance of errors. Desert
@@ -81,6 +64,17 @@ helps you write code that's dry.
 
 Quickstart
 ---------------
+
+
+To install, use
+
+.. code-block:: bash
+
+    pip install desert
+
+
+Define some dataclasses and convert them into a command-line interface.
+
 
 .. code-block:: python
 
@@ -113,7 +107,7 @@ Quickstart
     Config(db=DB(host='example.com', port=9999), dry_run=True)
 
 
-
-
 ..
     end-usage
+
+See the full docs for more information: https://desert.readthedocs.io/
