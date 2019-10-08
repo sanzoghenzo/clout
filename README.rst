@@ -96,7 +96,7 @@ Define some dataclasses and convert them into a command-line interface.
         dry_run: bool
 
 
-    cli = desert.Command("run", type=Config)
+    cli = desert.Command(type=Config)
 
     print(cli.build())
 

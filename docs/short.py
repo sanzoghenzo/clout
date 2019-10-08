@@ -16,7 +16,7 @@ class Config:
     dry_run: bool
 
 
-cli = desert.Command("run", type=Config)
+cli = desert.Command(type=Config)
 
 if __name__ == "__main__":
     print(cli.build())
