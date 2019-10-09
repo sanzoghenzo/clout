@@ -54,11 +54,12 @@ else:
 
 # Read from environment_variables prefixed `MYAPP_`,
 # such as MYAPP_CONFIG_PRIORITY=10.
-ENVVAR_DATA = desert.load_env(Config, prefix=f"{APP_NAME}")
+# XXX Would it be better as `MYAPP_PRIORITY` without inferring basd on the class name?
+ENVVAR_DATA = desert.load_env(Config, prefix=APP_NAME)
 
 
 # Combine config file and envvars to set CLI defaults.
-# XXX make a function `desert.combine()`?
+# XXX make a function `combine()` or `chain()`?
 # XXX Is it safe to combine like this? What if you *wanted* to have an empty dict as the value,
 # but it got replaced with a lower-priority value?
 CONTEXT_SETTINGS = dict(default_map=desert.DeepChainMap(ENVVAR_DATA, CONFIG_FILE_DATA))
@@ -74,8 +75,7 @@ commands = [
 ]
 cli = click.Group(commands={c.name: c for c in commands})
 
-# Run the CLI.
-# XXX This is a bit of boilerplate. Should it get a wrapper function?
 
 if __name__ == "__main__":
+    # Run the CLI.
     print(cli.main(standalone_mode=False))
