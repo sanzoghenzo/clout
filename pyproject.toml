@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "clout"
-version = "0.1.7.post2" # PACKAGE_VERSION  (This comment helps bumpversion find the right line.)
-description = "Use dataclasses without repeating yourself"
+version = "0.1.7.post3" # PACKAGE_VERSION  (This comment helps bumpversion find the right line.)
+description = "Command-line Object Utility Tool"
 authors = ["Clout contributors <python-clout@users.noreply.github.com>"]
 readme = "README.rst"
 classifiers = [
