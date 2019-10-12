@@ -4,4 +4,4 @@ Reference
 .. toctree::
     :glob:
 
-    desert*
+    clout*

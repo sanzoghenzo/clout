@@ -8,7 +8,7 @@ little bit helps, and credit will always be given.
 Bug reports
 ===========
 
-When `reporting a bug <https://github.com/python-desert/desert/issues>`_ please include:
+When `reporting a bug <https://github.com/python-clout/clout/issues>`_ please include:
 
     * Your operating system name and version.
     * Any details about your local setup that might be helpful in troubleshooting.
@@ -17,14 +17,14 @@ When `reporting a bug <https://github.com/python-desert/desert/issues>`_ please 
 Documentation improvements
 ==========================
 
-desert could always use more documentation, whether as part of the
-official desert docs, in docstrings, or even on the web in blog posts,
+clout could always use more documentation, whether as part of the
+official clout docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Feature requests and feedback
 =============================
 
-The best way to send feedback is to file an issue at https://github.com/python-desert/desert/issues.
+The best way to send feedback is to file an issue at https://github.com/python-clout/clout/issues.
 
 If you are proposing a feature:
 
@@ -35,13 +35,13 @@ If you are proposing a feature:
 Development
 ===========
 
-To set up `python-desert` for local development:
+To set up `python-clout` for local development:
 
-1. Fork `python-desert <https://github.com/python-desert/desert>`_
+1. Fork `python-clout <https://github.com/python-clout/clout>`_
    (look for the "Fork" button).
 2. Clone your fork locally::
 
-    git clone git@github.com:your_name_here/python-desert.git
+    git clone git@github.com:your_name_here/python-clout.git
 
 3. Create a branch for local development::
 
@@ -74,7 +74,7 @@ For merging, you should:
 
 
 .. [1] If you don't have all the necessary python versions available locally you can rely on Travis - it will
-       `run the tests <https://travis-ci.org/python-desert/desert/pull_requests>`_ for each change you add in the pull request.
+       `run the tests <https://travis-ci.org/python-clout/clout/pull_requests>`_ for each change you add in the pull request.
 
        It will be slower though ...
 

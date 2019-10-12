@@ -1,12 +1,12 @@
-class DesertException(Exception):
+class CloutException(Exception):
     pass
 
 
-class ValidationError(DesertException):
+class ValidationError(CloutException):
     pass
 
 
-class MissingInput(DesertException):
+class MissingInput(CloutException):
     def __init__(self, group, string, found):
         self.group = group
         self.string = string

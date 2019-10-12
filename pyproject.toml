@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "desert"
+name = "clout"
 version = "0.1.7.post2" # PACKAGE_VERSION  (This comment helps bumpversion find the right line.)
 description = "Use dataclasses without repeating yourself"
-authors = ["Desert contributors <python-desert@users.noreply.github.com>"]
+authors = ["Clout contributors <python-clout@users.noreply.github.com>"]
 readme = "README.rst"
 classifiers = [
         'Intended Audience :: Developers',
@@ -14,9 +14,8 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.5.2"
+python = "^3.7"
 click = "7.0"
-attrs = "^19.2.0"
 lark-parser = "^0.7.3"
 marshmallow = "^3.0"
 typing-inspect = "^0.4.0"
@@ -26,6 +25,8 @@ typing-extensions = "^3.7"
 importlib_resources = "^1.0"
 dataclasses = "^0.6.0"
 appdirs = "^1.4"
+attrs = "=19.2.0"
+
 
 
 
@@ -72,11 +73,11 @@ docs = [
 
 [tool.towncrier]
 
-   package = "desert"
+   package = "clout"
    package_dir = "src"
    filename = "CHANGELOG.rst"
    template = "changelog.d/towncrier_template.rst"
-   issue_format = "`#{issue} <https://github.com/python-desert/desert/issues/{issue}>`_"
+   issue_format = "`#{issue} <https://github.com/python-clout/clout/issues/{issue}>`_"
    directory = "changelog.d"
    title_format = "{version} ({project_date})"
    underlines = ["-", "^"]

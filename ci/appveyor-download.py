@@ -102,7 +102,7 @@ parser = argparse.ArgumentParser(description="Download artifacts from AppVeyor."
 parser.add_argument(
     "--id",
     metavar="PROJECT_ID",
-    default="python-desert/desert",
+    default="python-clout/clout",
     help="Project ID in AppVeyor.",
 )
 parser.add_argument(

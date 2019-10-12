@@ -6,7 +6,7 @@ import click
 import toml
 
 # XXX Should this be renamed to something like `click_dataclass`?
-import desert
+import clout
 
 
 @attr.dataclass
@@ -29,7 +29,7 @@ class Config:
     priority: float = attr.ib(
         default=0,
         metadata={
-            "desert": {
+            "clout": {
                 "cli": dict(param_decls=["--priority"], help="App priority value")
             }
         },
@@ -55,18 +55,18 @@ else:
 # Read from environment_variables prefixed `MYAPP_`,
 # such as MYAPP_CONFIG_PRIORITY=10.
 # XXX Would it be better as `MYAPP_PRIORITY` without inferring basd on the class name?
-ENVVAR_DATA = desert.load_env(Config, prefix=APP_NAME)
+ENVVAR_DATA = clout.load_env(Config, prefix=APP_NAME)
 
 
 # Combine config file and envvars to set CLI defaults.
 # XXX make a function `combine()` or `chain()`?
 # XXX Is it safe to combine like this? What if you *wanted* to have an empty dict as the value,
 # but it got replaced with a lower-priority value?
-CONTEXT_SETTINGS = dict(default_map=desert.DeepChainMap(ENVVAR_DATA, CONFIG_FILE_DATA))
+CONTEXT_SETTINGS = dict(default_map=clout.DeepChainMap(ENVVAR_DATA, CONFIG_FILE_DATA))
 
 # Define the CLI.
 commands = [
-    desert.Command(
+    clout.Command(
         "run",
         type=Config,
         context_settings=CONTEXT_SETTINGS,

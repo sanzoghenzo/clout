@@ -1,4 +1,4 @@
-desert package
+clout package
 ==============
 
 Subpackages
@@ -6,48 +6,48 @@ Subpackages
 
 .. toctree::
 
-   desert.encoders
-   desert.loaders
+   clout.encoders
+   clout.loaders
 
 Submodules
 ----------
 
-desert.core module
+clout.core module
 ------------------
 
-.. automodule:: desert.core
+.. automodule:: clout.core
    :members:
    :undoc-members:
    :show-inheritance:
 
-desert.exceptions module
+clout.exceptions module
 ------------------------
 
-.. automodule:: desert.exceptions
+.. automodule:: clout.exceptions
    :members:
    :undoc-members:
    :show-inheritance:
 
-desert.runner module
+clout.runner module
 --------------------
 
-.. automodule:: desert.runner
+.. automodule:: clout.runner
    :members:
    :undoc-members:
    :show-inheritance:
 
-desert.schemas module
+clout.schemas module
 ---------------------
 
-.. automodule:: desert.schemas
+.. automodule:: clout.schemas
    :members:
    :undoc-members:
    :show-inheritance:
 
-desert.util module
+clout.util module
 ------------------
 
-.. automodule:: desert.util
+.. automodule:: clout.util
    :members:
    :undoc-members:
    :show-inheritance:
@@ -56,7 +56,7 @@ desert.util module
 Module contents
 ---------------
 
-.. automodule:: desert
+.. automodule:: clout
    :members:
    :undoc-members:
    :show-inheritance:

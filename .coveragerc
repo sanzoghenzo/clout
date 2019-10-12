@@ -6,7 +6,7 @@ source =
 [run]
 branch = true
 source =
-    desert
+    clout
     tests
 parallel = true
 

@@ -10,7 +10,7 @@ import attr
 import click
 import lark
 
-import desert.exceptions
+import clout.exceptions
 
 from .. import util
 
@@ -190,11 +190,11 @@ class Walker(lark.Visitor):
         return name_rule(command), param_validation_method
 
 
-class CloutException(Exception):
+class CLIParsingErrorException(Exception):
     pass
 
 
-class InvalidInput(CloutException):
+class InvalidInput(CLIParsingErrorException):
     pass
 
 
@@ -202,11 +202,11 @@ class HelpRequested(Exception):
     pass
 
 
-class TooManyArgs(CloutException):
+class TooManyArgs(CLIParsingErrorException):
     pass
 
 
-class AmbiguousArgs(CloutException):
+class AmbiguousArgs(CLIParsingErrorException):
     pass
 
 
@@ -369,7 +369,7 @@ class Parser:
             tree = parser.parse(s)
         except lark.exceptions.ParseError as e:
             found = find_missing_input(parser, s)
-            raise desert.exceptions.MissingInput(self.group, s, found) from e
+            raise clout.exceptions.MissingInput(self.group, s, found) from e
 
         try:
             tree = RemoveInvalidBranches(group=self.group).transform(tree)

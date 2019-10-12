@@ -11,9 +11,9 @@ Set up the imports.
     import click
     import toml
 
-    import desert.loaders.cli
-    import desert.loaders.env
-    import desert.loaders.multi
+    import clout.loaders.cli
+    import clout.loaders.env
+    import clout.loaders.multi
 
 Define some classes.
 
@@ -39,7 +39,7 @@ Define some classes.
         priority: float = attr.ib(
             default=0,
             metadata={
-                "desert": {
+                "clout": {
                     "cli": dict(param_decls=["--priority"], help="App priority value")
                 }
             },
@@ -60,24 +60,24 @@ Set up the configuration sources.
 
     # Read from environment_variables prefixed `MYAPP_CONFIG_`.
     # XXX How to make this simpler?
-    # Provide a `prefix=` argument? If it's `desert.load_env(Config, prefix=)`, then how to
+    # Provide a `prefix=` argument? If it's `clout.load_env(Config, prefix=)`, then how to
     # provide the app name and config name separately? Is that useful?
-    ENVVAR_DATA = desert.loaders.env.Env(app_name=APP_NAME).prep(Config, name=CONFIG_NAME)
+    ENVVAR_DATA = clout.loaders.env.Env(app_name=APP_NAME).prep(Config, name=CONFIG_NAME)
 
 Define the command line interface.
 
 .. code-block:: python
 
     # Combine config file and envvars to set CLI defaults.
-    # XXX make a function `desert.combine()`?
+    # XXX make a function `clout.combine()`?
     CONTEXT_SETTINGS = dict(
-        default_map=desert.loaders.multi.DeepChainMap(ENVVAR_DATA, CONFIG_FILE_DATA)
+        default_map=clout.loaders.multi.DeepChainMap(ENVVAR_DATA, CONFIG_FILE_DATA)
     )
 
     # Define the CLI.
-    # XXX Should it just be called `desert.Command()`?
+    # XXX Should it just be called `clout.Command()`?
     commands = [
-        desert.loaders.cli.DesertCommand(
+        clout.loaders.cli.CloutCommand(
             "run",
             type=Config,
             context_settings=CONTEXT_SETTINGS,

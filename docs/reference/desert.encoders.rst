@@ -1,21 +1,21 @@
-desert.encoders package
+clout.encoders package
 =======================
 
 Submodules
 ----------
 
-desert.encoders.json module
+clout.encoders.json module
 ---------------------------
 
-.. automodule:: desert.encoders.json
+.. automodule:: clout.encoders.json
    :members:
    :undoc-members:
    :show-inheritance:
 
-desert.encoders.toml module
+clout.encoders.toml module
 ---------------------------
 
-.. automodule:: desert.encoders.toml
+.. automodule:: clout.encoders.toml
    :members:
    :undoc-members:
    :show-inheritance:
@@ -24,7 +24,7 @@ desert.encoders.toml module
 Module contents
 ---------------
 
-.. automodule:: desert.encoders
+.. automodule:: clout.encoders
    :members:
    :undoc-members:
    :show-inheritance:

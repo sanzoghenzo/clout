@@ -1,6 +1,6 @@
 # MIT License
 
-# Modified for desert from code written by
+# Modified for clout from code written by
 
 # Copyright (c) 2019 Ophir LOJKINE
 
@@ -168,7 +168,7 @@ def class_schema(clazz: type) -> Type[marshmallow.Schema]:
     C(important=9, unimportant=0)
     >>> @dataclasses.dataclass
     ... class Website:
-    ...  url:str = dataclasses.field(metadata = {'desert': {
+    ...  url:str = dataclasses.field(metadata = {'clout': {
     ...    "marshmallow_field": marshmallow.fields.Url() # Custom marshmallow field
     ...  }})
     ...
@@ -239,7 +239,7 @@ def field_for_schema(
     9
     >>> field_for_schema(Dict[str,str]).__class__
     <class 'marshmallow.fields.Dict'>
-    >>> field_for_schema(str, metadata={'desert': {"marshmallow_field": marshmallow.fields.Url()}}).__class__
+    >>> field_for_schema(str, metadata={'clout': {"marshmallow_field": marshmallow.fields.Url()}}).__class__
     <class 'marshmallow.fields.Url'>
     >>> field_for_schema(Optional[str]).__class__
     <class 'marshmallow.fields.String'>
@@ -261,7 +261,7 @@ def field_for_schema(
     <class 'marshmallow.fields.Raw'>
     """
 
-    metadata = {} if metadata is None else dict(metadata).get("desert", {})
+    metadata = {} if metadata is None else dict(metadata).get("clout", {})
 
     if default is not marshmallow.missing:
         metadata.setdefault("default", default)

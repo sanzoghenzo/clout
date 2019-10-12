@@ -1,7 +1,7 @@
 import attr
 import click
 
-import desert
+import clout
 
 
 @attr.dataclass
@@ -16,7 +16,7 @@ class Config:
     dry_run: bool
 
 
-cli = desert.Command("run", type=Config)
+cli = clout.Command("run", type=Config)
 
 print(cli.build())
 

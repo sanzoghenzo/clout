@@ -10,11 +10,11 @@ import inflection
 import marshmallow
 import typing_inspect
 
-import desert.exceptions
+import clout.exceptions
 
 from .. import schemas
 from .. import util
-from . import clout
+from . import parsing
 
 
 NO_DEFAULT = "__NO_DEFAULT__"
@@ -59,7 +59,7 @@ class Option(Debug, click.Option):
     pass
 
 
-class Group(Debug, clout.CountingGroup):
+class Group(Debug, parsing.CountingGroup):
     def __call__(self, *args, **kwargs):
         try:
             return super().__call__(*args, **kwargs, standalone_mode=False)
@@ -68,7 +68,7 @@ class Group(Debug, clout.CountingGroup):
                 raise
 
 
-class DebuggableCommand(Debug, clout.CountingCommand):
+class DebuggableCommand(Debug, parsing.CountingCommand):
     def __call__(self, *args, **kwargs):
         try:
             return super().__call__(*args, **kwargs)
@@ -278,7 +278,7 @@ class CLI:
 
         command = self.get_command(typ, default, metadata, args)
 
-        parser = clout.Parser(command, callback=command.callback, use_defaults=True)
+        parser = parsing.Parser(command, callback=command.callback, use_defaults=True)
         cli_args = (TOP_LEVEL_NAME,) + tuple(args or self.args or sys.argv[1:])
 
         import lark
@@ -292,7 +292,7 @@ class CLI:
                 raise
             else:
                 sys.exit(1)
-        except desert.exceptions.MissingInput as e:
+        except clout.exceptions.MissingInput as e:
             result = parser.parse_args(e.found + ["--help"])
 
         [value] = result.values()

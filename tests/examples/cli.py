@@ -3,7 +3,7 @@
 import attr
 import click
 
-import desert.loaders.cli
+import clout.loaders.cli
 
 
 @attr.dataclass
@@ -26,7 +26,7 @@ class Config:
     priority: float = attr.ib(
         default=0,
         metadata={
-            "desert": {
+            "clout": {
                 "cli": dict(param_decls=["--priority"], help="App priority value")
             }
         },
@@ -35,7 +35,7 @@ class Config:
     dry_run: bool = False
 
 
-cli = click.Group(commands={"run": desert.loaders.cli.class_cli_command(Config)})
+cli = click.Group(commands={"run": clout.loaders.cli.class_cli_command(Config)})
 
 got = cli.main(standalone_mode=False)
 

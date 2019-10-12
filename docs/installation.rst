@@ -4,4 +4,4 @@ Installation
 
 At the command line::
 
-    pip install desert
+    pip install clout

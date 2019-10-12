@@ -24,17 +24,17 @@ if os.getenv("SPELLCHECK"):
 
 source_suffix = ".rst"
 master_doc = "index"
-project = "desert"
+project = "clout"
 year = "2019"
-author = "Desert contributors"
+author = "Clout contributors"
 copyright = "{0}, {1}".format(year, author)
 version = release = "0.1.7"
 
 pygments_style = "trac"
 templates_path = ["."]
 extlinks = {
-    "issue": ("https://github.com/python-desert/desert/issues/%s", "#"),
-    "pr": ("https://github.com/python-desert/desert/pull/%s", "PR #"),
+    "issue": ("https://github.com/python-clout/clout/issues/%s", "#"),
+    "pr": ("https://github.com/python-clout/clout/pull/%s", "PR #"),
 }
 # on_rtd is whether we are on readthedocs.org
 on_rtd = os.environ.get("READTHEDOCS", None) == "True"
@@ -52,4 +52,4 @@ napoleon_use_ivar = True
 napoleon_use_rtype = False
 napoleon_use_param = True
 
-autoapi_dirs = ["../src/desert"]
+autoapi_dirs = ["../src/clout"]

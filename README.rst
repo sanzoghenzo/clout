@@ -1,5 +1,5 @@
 =======================================================
-Desert: Build command-line interfaces from dataclasses
+Clout: Command Line Object Utility Tool
 =======================================================
 
 .. start-badges
@@ -19,34 +19,34 @@ Desert: Build command-line interfaces from dataclasses
         | |supported-implementations|
         | |commits-since|
 
-.. |docs| image:: https://img.shields.io/readthedocs/desert
-    :target: https://desert.readthedocs.org
+.. |docs| image:: https://img.shields.io/readthedocs/clout
+    :target: https://clout.readthedocs.org
     :alt: Documentation Status
 
 
-.. |travis| image:: https://img.shields.io/travis/com/python-desert/desert
+.. |travis| image:: https://img.shields.io/travis/com/python-clout/clout
     :alt: Travis-CI Build Status
-    :target: https://travis-ci.com/python-desert/desert
+    :target: https://travis-ci.com/python-clout/clout
 
-.. |version| image:: https://img.shields.io/pypi/v/desert.svg
+.. |version| image:: https://img.shields.io/pypi/v/clout.svg
     :alt: PyPI Package latest release
-    :target: https://pypi.org/pypi/desert
+    :target: https://pypi.org/pypi/clout
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/python-desert/desert/v0.1.7.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/python-clout/clout/v0.1.7.svg
     :alt: Commits since latest release
-    :target: https://github.com/python-desert/desert/compare/v0.1.7...master
+    :target: https://github.com/python-clout/clout/compare/v0.1.7...master
 
-.. |wheel| image:: https://img.shields.io/pypi/wheel/desert.svg
+.. |wheel| image:: https://img.shields.io/pypi/wheel/clout.svg
     :alt: PyPI Wheel
-    :target: https://pypi.org/pypi/desert
+    :target: https://pypi.org/pypi/clout
 
-.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/desert.svg
+.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/clout.svg
     :alt: Supported versions
-    :target: https://pypi.org/pypi/desert
+    :target: https://pypi.org/pypi/clout
 
-.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/desert.svg
+.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/clout.svg
     :alt: Supported implementations
-    :target: https://pypi.org/pypi/desert
+    :target: https://pypi.org/pypi/clout
 
 
 .. end-badges
@@ -57,10 +57,7 @@ Desert: Build command-line interfaces from dataclasses
     start-usage
 
 
-
-Writing code that's dry ("don't repeat yourself") means less chance of errors. Desert
-helps you write code that's dry.
-
+Convert dataclasses into a command-line interface.
 
 Quickstart
 ---------------
@@ -70,7 +67,7 @@ To install, use
 
 .. code-block:: bash
 
-    pip install desert
+    pip install clout
 
 
 Define some dataclasses and convert them into a command-line interface.
@@ -81,7 +78,7 @@ Define some dataclasses and convert them into a command-line interface.
     import attr
     import click
 
-    import desert
+    import clout
 
 
     @attr.dataclass
@@ -96,7 +93,7 @@ Define some dataclasses and convert them into a command-line interface.
         dry_run: bool
 
 
-    cli = desert.Command(type=Config)
+    cli = clout.Command(type=Config)
 
     print(cli.build())
 
@@ -110,4 +107,4 @@ Define some dataclasses and convert them into a command-line interface.
 ..
     end-usage
 
-See the full docs for more information: https://desert.readthedocs.io/
+See the full docs for more information: https://clout.readthedocs.io/

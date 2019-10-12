@@ -1,61 +1,61 @@
-desert.loaders package
+clout.loaders package
 ======================
 
 Submodules
 ----------
 
-desert.loaders.appfile module
+clout.loaders.appfile module
 -----------------------------
 
-.. automodule:: desert.loaders.appfile
+.. automodule:: clout.loaders.appfile
    :members:
    :undoc-members:
    :show-inheritance:
 
-desert.loaders.cli module
+clout.loaders.cli module
 -------------------------
 
-.. automodule:: desert.loaders.cli
+.. automodule:: clout.loaders.cli
    :members:
    :undoc-members:
    :show-inheritance:
 
-desert.loaders.clout module
+clout.loaders.parsing module
 ---------------------------
 
-.. automodule:: desert.loaders.clout
+.. automodule:: clout.loaders.parsing
    :members:
    :undoc-members:
    :show-inheritance:
 
-desert.loaders.env module
+clout.loaders.env module
 -------------------------
 
-.. automodule:: desert.loaders.env
+.. automodule:: clout.loaders.env
    :members:
    :undoc-members:
    :show-inheritance:
 
-desert.loaders.multi module
+clout.loaders.multi module
 ---------------------------
 
-.. automodule:: desert.loaders.multi
+.. automodule:: clout.loaders.multi
    :members:
    :undoc-members:
    :show-inheritance:
 
-desert.loaders.raw module
+clout.loaders.raw module
 -------------------------
 
-.. automodule:: desert.loaders.raw
+.. automodule:: clout.loaders.raw
    :members:
    :undoc-members:
    :show-inheritance:
 
-desert.loaders.resource module
+clout.loaders.resource module
 ------------------------------
 
-.. automodule:: desert.loaders.resource
+.. automodule:: clout.loaders.resource
    :members:
    :undoc-members:
    :show-inheritance:
@@ -64,7 +64,7 @@ desert.loaders.resource module
 Module contents
 ---------------
 
-.. automodule:: desert.loaders
+.. automodule:: clout.loaders
    :members:
    :undoc-members:
    :show-inheritance:
