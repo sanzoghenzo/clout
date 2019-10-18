@@ -45,3 +45,15 @@ def test_short_example():
     expected = "Config(db=DB(host='example.com', port=9999), dry_run=True)\n"
 
     assert output == expected
+
+
+def test_show_missing_args():
+    """Show help for missing args."""
+    args = ["config", "--dry-run", "db"]
+    proc = subprocess.run(
+        [sys.executable, "docs/short.py"] + args, capture_output=True, check=False
+    )
+    assert proc.returncode == 0, proc.stderr.decode()
+
+    output = proc.stdout.decode()
+    assert output.startswith("Usage:")
