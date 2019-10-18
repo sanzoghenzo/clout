@@ -11,7 +11,7 @@ Clout: Command Line Object Utility Tool
       - |docs|
     * - tests
       - | |travis|
-        |
+        | |codecov|
     * - package
       - | |version|
         | |wheel|
@@ -48,6 +48,9 @@ Clout: Command Line Object Utility Tool
     :alt: Supported implementations
     :target: https://pypi.org/pypi/clout
 
+.. |codecov| image:: https://img.shields.io/codecov/c/github/python-clout/clout/master.svg
+     :alt: Coverage
+     :target: https://codecov.io/gh/python-clout/clout
 
 .. end-badges
 
