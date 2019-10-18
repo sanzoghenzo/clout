@@ -7,8 +7,11 @@ Clout: Command Line Object Utility Tool
 .. list-table::
     :stub-columns: 1
 
+
     * - docs
       - |docs|
+    * - code
+      - |github|
     * - tests
       - | |travis|
         | |codecov|
@@ -51,6 +54,10 @@ Clout: Command Line Object Utility Tool
 .. |codecov| image:: https://img.shields.io/codecov/c/github/python-clout/clout/master.svg
      :alt: Coverage
      :target: https://codecov.io/gh/python-clout/clout
+
+.. |github| image:: https://img.shields.io/github/last-commit/python-clout/clout
+     :alt: Last commit
+     :target: https://img.shields.io/github/last-commit/python-clout/clout
 
 .. end-badges
 
