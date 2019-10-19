@@ -285,10 +285,14 @@ class CLI:
 
         try:
             result = parser.parse_args(cli_args)
-        except (lark.exceptions.ParseError, lark.exceptions.UnexpectedCharacters):
+        except (
+            lark.exceptions.ParseError,
+            lark.exceptions.UnexpectedCharacters,
+            lark.exceptions.VisitError,
+        ):
 
-            print(command.get_help(click.Context(command)))
-            if os.environ.get("CLI_SHOW_TRACEBACK"):
+            print(command.get_help(click.Context(command)) + EPILOG)
+            if int(os.environ.get("CLI_SHOW_TRACEBACK", 0)):
                 raise
             else:
                 sys.exit(1)
@@ -321,6 +325,9 @@ class NonStandaloneCommand(click.Command):
         return super().main(*a, standalone_mode=standalone_mode, **kw)
 
 
+EPILOG = "\n\nNote:\n  export CLI_SHOW_TRACEBACK=1 to show traceback on error.\n"
+
+
 class Command(click.Command):
     def __init__(
         self,
@@ -331,11 +338,16 @@ class Command(click.Command):
         callback=lambda x: x,
         params=None,
         context_settings=None,
+        epilog=None,
         **kw,
     ):
         if type is None:
             raise TypeError("missing `type` argument")
         self.app_name = app_name
+
+        epilog = epilog or ""
+        epilog += EPILOG
+
         context_settings = context_settings or {}
         context_settings["ignore_unknown_options"] = True
         super().__init__(
@@ -343,6 +355,7 @@ class Command(click.Command):
             *a,
             **kw,
             add_help_option=False,
+            epilog=epilog,
             context_settings=context_settings,
         )
         self.params = (params or []) + [
