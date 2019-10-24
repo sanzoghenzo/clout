@@ -48,7 +48,7 @@ class Env:
         metadata = metadata or {}
         top_name = name or util.dasherize(typ.__name__)
 
-        schema = desert.class_schema(typ)()
+        schema = desert.schema_class(typ)()
         path_to_field = self.make_path_to_field(schema, path=(top_name,))
 
         d = {}

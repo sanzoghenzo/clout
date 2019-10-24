@@ -34,7 +34,7 @@ class Multi:
         return DeepChainMap(*[loader.prep(cls) or {} for loader in multi.loaders])
 
     def build(self, cls):
-        schema = desert.class_schema(cls)()
+        schema = desert.schema_class(cls)()
         prepped = self.prep(cls)
         try:
             return schema.load(prepped)

@@ -256,7 +256,7 @@ class CLI:
 
             name = metadata.get("name", util.dasherize(self.app_name))
 
-            schema = desert.class_schema(typ)()
+            schema = desert.schema_class(typ)()
             command = self.make_command_from_schema(schema, path=(name,))
 
             command.callback = schema.load
