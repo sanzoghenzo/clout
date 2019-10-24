@@ -2,11 +2,11 @@ import os
 import typing as t
 
 import attr
+import desert
 import glom
 import inflection
 import marshmallow
 
-from .. import desert
 from .. import util
 
 

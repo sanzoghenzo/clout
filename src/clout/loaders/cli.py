@@ -5,6 +5,7 @@ import typing as t
 
 import attr
 import click
+import desert
 import glom
 import inflection
 import marshmallow
@@ -12,7 +13,6 @@ import typing_inspect
 
 import clout.exceptions
 
-from .. import desert
 from .. import util
 from . import parsing
 
