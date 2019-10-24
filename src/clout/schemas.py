@@ -25,7 +25,7 @@
 
 """
 This library allows the conversion of python 3.7's :mod:`dataclasses`
-to :mod:`marshmallow` schemas.
+to :mod:`marshmallow` desert.
 It takes a python class, and generates a marshmallow schema for it.
 Simple example::
     from marshmallow import Schema

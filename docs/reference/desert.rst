@@ -36,13 +36,6 @@ clout.runner module
    :undoc-members:
    :show-inheritance:
 
-clout.schemas module
----------------------
-
-.. automodule:: clout.schemas
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 clout.util module
 ------------------

@@ -12,7 +12,7 @@ import typing_inspect
 
 import clout.exceptions
 
-from .. import schemas
+from .. import desert
 from .. import util
 from . import parsing
 
@@ -256,7 +256,7 @@ class CLI:
 
             name = metadata.get("name", util.dasherize(self.app_name))
 
-            schema = schemas.class_schema(typ)()
+            schema = desert.class_schema(typ)()
             command = self.make_command_from_schema(schema, path=(name,))
 
             command.callback = schema.load

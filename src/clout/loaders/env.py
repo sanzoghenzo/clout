@@ -6,7 +6,7 @@ import glom
 import inflection
 import marshmallow
 
-from .. import schemas
+from .. import desert
 from .. import util
 
 
@@ -48,7 +48,7 @@ class Env:
         metadata = metadata or {}
         top_name = name or util.dasherize(typ.__name__)
 
-        schema = schemas.class_schema(typ)()
+        schema = desert.class_schema(typ)()
         path_to_field = self.make_path_to_field(schema, path=(top_name,))
 
         d = {}
