@@ -3,10 +3,10 @@ import collections.abc
 import typing as t
 
 import attr
+import desert
 import marshmallow
 
 from .. import exceptions
-from .. import schemas
 
 
 @attr.dataclass(frozen=True)
@@ -34,7 +34,7 @@ class Multi:
         return DeepChainMap(*[loader.prep(cls) or {} for loader in multi.loaders])
 
     def build(self, cls):
-        schema = schemas.class_schema(cls)()
+        schema = desert.schema_class(cls)()
         prepped = self.prep(cls)
         try:
             return schema.load(prepped)

@@ -5,6 +5,7 @@ import typing as t
 
 import attr
 import click
+import desert
 import glom
 import inflection
 import marshmallow
@@ -12,7 +13,6 @@ import typing_inspect
 
 import clout.exceptions
 
-from .. import schemas
 from .. import util
 from . import parsing
 
@@ -256,7 +256,7 @@ class CLI:
 
             name = metadata.get("name", util.dasherize(self.app_name))
 
-            schema = schemas.class_schema(typ)()
+            schema = desert.schema_class(typ)()
             command = self.make_command_from_schema(schema, path=(name,))
 
             command.callback = schema.load
