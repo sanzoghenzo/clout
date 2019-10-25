@@ -170,7 +170,7 @@ def extract(mapping, path):
 def get_default(field, path, default_map):
 
     try:
-        return extract(default_map, path)
+        return extract(default_map, path[1:])
     except KeyError:
         return field.default
 

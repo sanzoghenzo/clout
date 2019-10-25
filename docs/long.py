@@ -51,7 +51,7 @@ else:
 
 
 # Read from environment_variables prefixed `MYAPP_`,
-# such as MYAPP_CONFIG_PRIORITY=10.
+# such as MYAPP_PRIORITY=10.
 ENVVAR_DATA = clout.load_env(Config, prefix=APP_NAME)
 
 

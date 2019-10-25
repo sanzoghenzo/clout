@@ -46,16 +46,16 @@ class Env:
         # TODO make sure this handles lists correctly.
         # If a field is a list, this should return a list, not a single member.
         metadata = metadata or {}
-        top_name = name or util.dasherize(typ.__name__)
 
         schema = desert.schema_class(typ)()
-        path_to_field = self.make_path_to_field(schema, path=(top_name,))
+        path_to_field = self.make_path_to_field(schema, path=())
 
         d = {}
         for path, field in path_to_field.items():
             name = self.make_envvar_name(path)
 
             value = os.environ.get(name)
+
             if value is not None:
                 d[path] = field.deserialize(value)
 
