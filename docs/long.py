@@ -72,4 +72,4 @@ cli = click.Group(commands={c.name: c for c in commands})
 
 if __name__ == "__main__":
     # Run the CLI.
-    print(cli.build())
+    print(cli.main(standalone_mode=False))
