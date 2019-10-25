@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "clout"
-version = "0.1.9" # PACKAGE_VERSION  (This comment helps bumpversion find the right line.)
+version = "0.1.10" # PACKAGE_VERSION  (This comment helps bumpversion find the right line.)
 description = "Command-line Object Utility Tool"
 authors = ["Clout contributors <python-clout@users.noreply.github.com>"]
 readme = "README.rst"
