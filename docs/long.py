@@ -52,7 +52,6 @@ else:
 
 # Read from environment_variables prefixed `MYAPP_`,
 # such as MYAPP_CONFIG_PRIORITY=10.
-# XXX Would it be better as `MYAPP_PRIORITY` without inferring basd on the class name?
 ENVVAR_DATA = clout.load_env(Config, prefix=APP_NAME)
 
 
