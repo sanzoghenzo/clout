@@ -25,8 +25,8 @@ typing-extensions = "^3.7"
 importlib_resources = "^1.0"
 dataclasses = "^0.6.0"
 appdirs = "^1.4"
-attrs = "*"
-desert = "*"
+attrs = ">=19.2.0"
+desert = ">=0.1.4"
 
 
 
