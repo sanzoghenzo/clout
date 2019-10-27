@@ -377,5 +377,6 @@ class Command(click.Command):
             ).build(type, args=args)
         )
 
-    def build(self, *a, **kw):
+    def build(self):
+        """Return an instance of `self.type`, built from the command line arguments."""
         return self.main(standalone_mode=False)
