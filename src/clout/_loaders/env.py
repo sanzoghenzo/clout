@@ -80,5 +80,32 @@ def make_nested(path_to_value: t.Dict[t.Tuple, t.Any]) -> dict:
     return d
 
 
-def load_env(type, prefix=""):
+def load_env(type: t.Type, prefix: str = ""):
+    """Load environment variables for a class into a dict.
+
+    For example, setting
+
+        .. code-block:: bash
+
+            export MYAPP_HOST=example.com
+            export MYAPP_PORT=1234
+
+
+        .. code-block python
+
+            import attr
+
+
+            @attr.dataclass
+            class Database:
+                host: str
+                port: int
+
+
+            d = clout.load_env(Database, prefix='MYAPP')
+
+
+            assert d == {'host': 'example.com', 'port': 1234}
+
+    """
     return Env(prefix=prefix).prep(type)
