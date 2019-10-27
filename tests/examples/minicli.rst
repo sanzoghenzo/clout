@@ -11,9 +11,9 @@ Set up the imports.
     import click
     import toml
 
-    import clout.loaders.cli
-    import clout.loaders.env
-    import clout.loaders.multi
+    import clout._loaders.cli
+    import clout._loaders.env
+    import clout._loaders.multi
 
 Define some classes.
 
@@ -62,7 +62,7 @@ Set up the configuration sources.
     # XXX How to make this simpler?
     # Provide a `prefix=` argument? If it's `clout.load_env(Config, prefix=)`, then how to
     # provide the app name and config name separately? Is that useful?
-    ENVVAR_DATA = clout.loaders.env.Env(app_name=APP_NAME).prep(Config, name=CONFIG_NAME)
+    ENVVAR_DATA = clout._loaders.env.Env(app_name=APP_NAME).prep(Config, name=CONFIG_NAME)
 
 Define the command line interface.
 
@@ -71,13 +71,13 @@ Define the command line interface.
     # Combine config file and envvars to set CLI defaults.
     # XXX make a function `clout.combine()`?
     CONTEXT_SETTINGS = dict(
-        default_map=clout.loaders.multi.DeepChainMap(ENVVAR_DATA, CONFIG_FILE_DATA)
+        default_map=clout._loaders.multi.DeepChainMap(ENVVAR_DATA, CONFIG_FILE_DATA)
     )
 
     # Define the CLI.
     # XXX Should it just be called `clout.Command()`?
     commands = [
-        clout.loaders.cli.CloutCommand(
+        clout._loaders.cli.CloutCommand(
             "run",
             type=Config,
             context_settings=CONTEXT_SETTINGS,
