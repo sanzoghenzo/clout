@@ -59,3 +59,14 @@ def test_show_missing_args():
 
     output = proc.stdout.decode()
     assert output.startswith("Usage:")
+
+
+def test_show_missing_data_args():
+    """When validation fails for missing data, explain the problem to the user."""
+    args = ["config", "--dry-run", "db", "--port", "3"]
+    proc = subprocess.run(
+        [sys.executable, "docs/short.py"] + args, capture_output=True, check=False
+    )
+    assert proc.returncode == 1, proc.stderr.decode()
+
+    assert "Missing data for required field" in proc.stderr.decode()

@@ -8,6 +8,7 @@ import click
 import desert
 import glom
 import inflection
+import lark
 import marshmallow
 import typing_inspect
 
@@ -259,7 +260,13 @@ class CLI:
             schema = desert.schema_class(typ)()
             command = self.make_command_from_schema(schema, path=(name,))
 
-            command.callback = schema.load
+            def schema_load(*a, **kw):
+                try:
+                    return schema.load(*a, **kw)
+                except marshmallow.exceptions.ValidationError as e:
+                    raise clout.exceptions.ValidationError(*e.args) from e
+
+            command.callback = schema_load
 
         command = Group(
             name=TOP_LEVEL_NAME,
@@ -281,10 +288,11 @@ class CLI:
         parser = parsing.Parser(command, callback=command.callback, use_defaults=True)
         cli_args = (TOP_LEVEL_NAME,) + tuple(args or self.args or sys.argv[1:])
 
-        import lark
-
         try:
             result = parser.parse_args(cli_args)
+        except click.exceptions.BadParameter as e:
+            e.show()
+            sys.exit(1)
         except (
             lark.exceptions.ParseError,
             lark.exceptions.UnexpectedCharacters,

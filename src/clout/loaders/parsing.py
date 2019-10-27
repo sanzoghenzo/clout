@@ -250,7 +250,11 @@ class Transformer(lark.Transformer):
         out = {}
         for param, value in d.items():
             if isinstance(param, click.Parameter):
-                out[param.name] = param.process_value(click.Context(command), value)
+                try:
+                    out[param.name] = param.process_value(click.Context(command), value)
+                except click.exceptions.BadParameter as e:
+                    # XXX
+                    raise
             elif isinstance(param, click.BaseCommand):
 
                 out[param.name] = {k: v for k, v in value.items() if v != util.UNSET}
@@ -380,9 +384,13 @@ class Parser:
 
         if not ALWAYS_ACCEPT:
             Walker(group=self.group).visit(tree)
-        _group, value = Transformer(
-            group=self.group, use_defaults=self.use_defaults
-        ).transform(tree)
+        transformer = Transformer(group=self.group, use_defaults=self.use_defaults)
+
+        try:
+            _group, value = transformer.transform(tree)
+        except lark.exceptions.VisitError as e:
+            raise e.orig_exc from e
+
         return value
 
     def parse_args(self, args: t.List[str]):

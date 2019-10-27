@@ -57,7 +57,7 @@ sphinx_autodoc_typehints = "^1.7"
 marshmallow_enum = "^1.5"
 marshmallow_union = "^0.1.10"
 mypy = "^0.720.0"
-
+black = {version = "^18.3-alpha.0", allows-prereleases = true}
 
 [tool.poetry.extras]
 docs = [
