@@ -175,17 +175,6 @@ class Walker(lark.Visitor):
                 observed = counter.get(param_or_cmd_id, 0)
                 if observed > param_or_cmd.nargs:
                     raise TooManyArgs(param_or_cmd)
-                if not ALWAYS_ACCEPT:
-                    if param_or_cmd.required and observed == 0:
-
-                        raise InvalidInput(param_or_cmd, observed)
-                    if (
-                        not param_or_cmd.multiple
-                        and param_or_cmd.nargs != -1
-                        and observed != param_or_cmd.nargs
-                        and not (not param_or_cmd.required and observed == 0)
-                    ):
-                        raise InvalidInput(param_or_cmd, observed)
 
         return name_rule(command), param_validation_method
 
@@ -382,8 +371,6 @@ class Parser:
                 "The command arguments were ambiguous. Rearranging terms might help."
             )
 
-        if not ALWAYS_ACCEPT:
-            Walker(group=self.group).visit(tree)
         transformer = Transformer(group=self.group, use_defaults=self.use_defaults)
 
         try:
