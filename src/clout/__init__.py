@@ -1,4 +1,4 @@
-__version__ = "0.1.10"
+__version__ = "0.1.11"
 
 from .loaders.cli import Command
 from .loaders.env import load_env
