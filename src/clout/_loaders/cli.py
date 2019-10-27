@@ -338,6 +338,8 @@ EPILOG = "\n\nNote:\n  export CLI_SHOW_TRACEBACK=1 to show traceback on error.\n
 
 
 class Command(click.Command):
+    """A :class:`click.Command` built from an :func:`attr.dataclass` or :func:`dataclasses.dataclass`."""
+
     def __init__(
         self,
         type,

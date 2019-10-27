@@ -16,6 +16,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
+    "sphinx.ext.intersphinx",
 ]
 if os.getenv("SPELLCHECK"):
     extensions += ("sphinxcontrib.spelling",)
@@ -53,3 +54,10 @@ napoleon_use_rtype = False
 napoleon_use_param = True
 
 autoapi_dirs = ["../src/clout"]
+
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "attr": ("https://attrs.readthedocs.io/en/stable/", None),
+    "attrs": ("https://attrs.readthedocs.io/en/stable/", None),
+    "click": ("https://click.palletsprojects.com/en/7.x/", None),
+}
