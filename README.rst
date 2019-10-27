@@ -103,7 +103,7 @@ Define some dataclasses and convert them into a command-line interface.
         dry_run: bool
 
 
-    cli = clout.Command(type=Config)
+    cli = clout.Command(Config)
 
     print(cli.build())
 
