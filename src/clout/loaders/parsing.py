@@ -12,7 +12,7 @@ import lark
 
 import clout.exceptions
 
-from .. import util
+from .. import _util
 
 
 ALWAYS_ACCEPT = True
@@ -246,7 +246,7 @@ class Transformer(lark.Transformer):
                     raise
             elif isinstance(param, click.BaseCommand):
 
-                out[param.name] = {k: v for k, v in value.items() if v != util.UNSET}
+                out[param.name] = {k: v for k, v in value.items() if v != _util.UNSET}
             else:
                 raise TypeError(param)
 

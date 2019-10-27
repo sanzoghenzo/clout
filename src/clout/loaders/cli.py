@@ -15,7 +15,7 @@ import typing_inspect
 
 import clout.exceptions
 
-from .. import util
+from .. import _util
 from . import parsing
 
 
@@ -137,7 +137,7 @@ def _(field: marshmallow.fields.Boolean, data, default) -> Option:
         return Option(**data, default=default)
 
     return Option(
-        [util.dasherize(f"--{field.name}/--no-{field.name}")],
+        [_util.dasherize(f"--{field.name}/--no-{field.name}")],
         default=default,
         required=field.missing == marshmallow.missing,
         is_flag=True,
@@ -256,7 +256,7 @@ class CLI:
             command = cli_metadata
         else:
 
-            name = metadata.get("name", util.dasherize(self.app_name))
+            name = metadata.get("name", _util.dasherize(self.app_name))
 
             schema = desert.schema_class(typ)()
             command = self.make_command_from_schema(schema, path=(name,))
@@ -372,7 +372,7 @@ class Command(click.Command):
         ]
         self.callback = lambda args: callback(
             CLI(
-                app_name=app_name or util.dasherize(type.__name__),
+                app_name=app_name or _util.dasherize(type.__name__),
                 context_settings=context_settings,
             ).build(type, args=args)
         )

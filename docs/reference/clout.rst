@@ -37,10 +37,10 @@ clout.runner module
    :show-inheritance:
 
 
-clout.util module
+clout._util module
 -----------------
 
-.. automodule:: clout.util
+.. automodule:: clout._util
    :members:
    :undoc-members:
    :show-inheritance:

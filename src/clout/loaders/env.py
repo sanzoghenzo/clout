@@ -7,7 +7,7 @@ import glom
 import inflection
 import marshmallow
 
-from .. import util
+from .. import _util
 
 
 @attr.dataclass
