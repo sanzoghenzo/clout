@@ -43,6 +43,20 @@ class Multi:
 
 
 class DeepChainMap(collections.ChainMap):
+    """Combine multiple dicts into a deep mapping.
+
+    Lookups that fail in the first dict will be checked in the next one.
+
+
+    >>> import clout
+    >>> maps = [{"a": {}}, {"a": {"b": {}}}, {"a": {"b": {"c": 1337}}}]
+    >>> dcm = clout.DeepChainMap(*maps)
+    >>> dcm["a"]["b"]["c"]
+    1337
+
+
+    """
+
     def __getitem__(self, key):
         value = super().__getitem__(key)
         if isinstance(value, collections.abc.Mapping):
