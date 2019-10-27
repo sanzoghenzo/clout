@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sys
 
@@ -25,7 +26,7 @@ def test_long_example():
         [sys.executable, "docs/long.py"] + args,
         capture_output=True,
         check=False,
-        env={"MYAPP_PRIORITY": "2"},
+        env=dict(**{"MYAPP_PRIORITY": "2"}, **os.environ),
     )
     assert proc.returncode == 0, proc.stderr.decode()
 
