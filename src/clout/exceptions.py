@@ -3,14 +3,16 @@ import click._compat
 
 
 class CloutException(Exception):
-    pass
+    """Base exception for Clout exceptions."""
 
 
 class ValidationError(CloutException):
-    pass
+    """Raised for invalid command-line arguments."""
 
 
 class MissingInput(CloutException):
+    """Raised for missing command-line arguments."""
+
     def __init__(self, group, string, found):
         self.group = group
         self.string = string
