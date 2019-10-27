@@ -383,9 +383,3 @@ class Parser:
     def parse_args(self, args: t.List[str]):
         line = subprocess.list2cmdline(args)
         return self.parse_string(line)
-
-    def invoke_string(self, line: str):
-        return self.callback(self.parse_string(line))
-
-    def invoke_args(self, args: t.List[str]):
-        return self.callback(self.parse_args(args))
