@@ -41,13 +41,8 @@ APP_NAME = "myapp"
 
 
 # Read config file.
-config_file_path = pathlib.Path(appdirs.user_config_dir(APP_NAME)) / "config.toml"
-try:
-    config_file_text = config_file_path.read_text()
-except FileNotFoundError:
-    CONFIG_FILE_DATA = {}
-else:
-    CONFIG_FILE_DATA = toml.loads(config_file_text)
+with open("examples/config.toml") as f:
+    CONFIG_FILE_DATA = toml.load(f)
 
 
 # Read from environment_variables prefixed `MYAPP_`,
