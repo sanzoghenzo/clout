@@ -1,3 +1,4 @@
+import dataclasses
 import functools
 import os
 import sys
@@ -339,8 +340,8 @@ EPILOG = "\n\nNote:\n  export CLI_SHOW_TRACEBACK=1 to show traceback on error.\n
 class Command(click.Command):
     def __init__(
         self,
+        type,
         name=None,
-        type=None,
         *a,
         app_name=None,
         callback=lambda x: x,
@@ -349,8 +350,8 @@ class Command(click.Command):
         epilog=None,
         **kw,
     ):
-        if type is None:
-            raise TypeError("missing `type` argument")
+        if not (attr.has(type) or dataclasses.is_dataclass(type)):
+            raise TypeError(f"Need a dataclass, got {type} of type {type.__class__}")
         self.app_name = app_name
 
         epilog = epilog or ""
