@@ -1,5 +1,5 @@
 =======================================================
-Clout: Command Line Object Utility Tool
+Clout: Command-Line Object Utility Tool
 =======================================================
 
 .. start-badges
