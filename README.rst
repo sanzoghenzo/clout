@@ -35,9 +35,9 @@ Clout: Command-Line Object Utility Tool
     :alt: PyPI Package latest release
     :target: https://pypi.org/pypi/clout
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/python-clout/clout/v0.1.11.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/python-clout/clout/v0.1.12.svg
     :alt: Commits since latest release
-    :target: https://github.com/python-clout/clout/compare/v0.1.11...master
+    :target: https://github.com/python-clout/clout/compare/v0.1.12...master
 
 .. |wheel| image:: https://img.shields.io/pypi/wheel/clout.svg
     :alt: PyPI Wheel
