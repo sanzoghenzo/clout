@@ -91,7 +91,7 @@ def load_env(type: t.Type, prefix: str = ""):
             export MYAPP_PORT=1234
 
 
-        .. code-block python
+        .. code-block:: python
 
             import attr
 
