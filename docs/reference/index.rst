@@ -9,11 +9,11 @@ Reference
 
 
 clout package
-=============
+------------------
 
 
 Module contents
----------------
+~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: clout
    :members:
@@ -25,7 +25,7 @@ Submodules
 ----------
 
 clout.exceptions module
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: clout.exceptions
    :members:
