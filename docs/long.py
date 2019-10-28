@@ -41,7 +41,7 @@ APP_NAME = "myapp"
 
 
 # Read config file.
-with pathlib.Path.home() / ".config/myapp/config.toml" as f:
+with open("examples/config.toml") as f:
     CONFIG_FILE_DATA = toml.load(f)
 
 
