@@ -11,6 +11,8 @@ Usage
 A decorator
 -------------
 
+To run a function with the built object, you can use a decorator, :func:`clout.command()`.
+Using :meth:`clout.Command.main()`, the program will exit immediately afterwards.
 
 .. literalinclude:: ../examples/decorator.py
     :language: python
@@ -19,6 +21,9 @@ A decorator
 
 A callback
 -----------------
+
+If you don't want to use a decorator, you can use :class:`clout.Command()` directly, and
+pass the `callback=` argument.
 
 .. literalinclude:: ../examples/callback.py
     :language: python
