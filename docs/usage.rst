@@ -7,6 +7,23 @@ Usage
    :end-before: end-usage
 
 
+
+A decorator
+-------------
+
+
+.. literalinclude:: ../examples/decorator.py
+    :language: python
+
+
+
+A callback
+-----------------
+
+.. literalinclude:: ../examples/callback.py
+    :language: python
+
+
 Extended example
 --------------------
 
