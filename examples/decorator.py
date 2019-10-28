@@ -1,5 +1,4 @@
 import attr
-import click
 
 import clout
 
