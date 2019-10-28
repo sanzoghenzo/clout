@@ -344,7 +344,6 @@ class Command(click.Command):
         self,
         type,
         name=None,
-        *a,
         app_name=None,
         callback=lambda x: x,
         params=None,
