@@ -86,18 +86,20 @@ def load_env(type: t.Type, prefix: str = ""):
     For example, define a class
 
 
-        .. code-block:: python
+    .. code-block:: python
 
-            import attr
+        import attr
 
 
-            @attr.dataclass
-            class Database:
-                host: str
-                port: int
+        @attr.dataclass
+        class Database:
+            host: str
+            port: int
 
 
     Load the environment variables into a dict, setting the prefix for our app.
+
+    .. code-block:: python
 
             d = clout.load_env(Database, prefix='MYAPP')
             assert d == {'host': 'example.com', 'port': 1234}
@@ -105,10 +107,10 @@ def load_env(type: t.Type, prefix: str = ""):
 
     Run the app with environment variables set.
 
-        .. code-block:: bash
+    .. code-block:: bash
 
-            export MYAPP_HOST=example.com
-            export MYAPP_PORT=1234
+        export MYAPP_HOST=example.com
+        export MYAPP_PORT=1234
 
     """
     return Env(prefix=prefix).prep(type)
