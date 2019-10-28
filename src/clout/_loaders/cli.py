@@ -384,6 +384,13 @@ class Command(click.Command):
         """Return an instance of `self.type`, built from the command line arguments."""
         return self.main(standalone_mode=False)
 
+    def main(self, **kwargs):
+        """Run the command and exit the program afterwards.
+
+        Upcalls directly to :meth:`click.Command.main()`.
+        """
+        return super().main(**kwargs)
+
 
 def command(type: Dataclass, **kwargs):
     """A decorator that replaces the decorated function with a :class:`clout.Command`.
