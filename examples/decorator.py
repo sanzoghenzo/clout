@@ -5,7 +5,7 @@ import clout
 
 @attr.dataclass
 class Person:
-    name: str
+    name: str = attr.ib(metadata={"clout": {"cli": dict(envvar="EXAMPLE_NAME")}})
     age: int
 
 
@@ -15,4 +15,4 @@ def greet(person):
 
 
 if __name__ == "__main__":
-    greet.main()
+    print(greet.main())

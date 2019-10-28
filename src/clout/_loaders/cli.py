@@ -171,9 +171,18 @@ def extract(mapping, path):
 
 
 def get_default(field, path, default_map):
+    # XXX The envvar logic should be somewhere else.
+    envvar = field.metadata.get("clout", {}).get("cli", {}).get("envvar")
+    if envvar is not None:
+        value = os.environ.get(envvar)
+        if value is not None:
+            return value
 
     try:
-        return extract(default_map, path[1:])
+        value = extract(default_map, path[1:])
+        import q
+
+        q(default_map, path)
     except KeyError:
         return field.default
 
@@ -191,8 +200,9 @@ class CLI:
     ) -> click.BaseCommand:
         params = []
         commands = []
-        # import pudb; pudb.set_trace()
+
         for field in schema.fields.values():
+
             if isinstance(field, marshmallow.fields.Nested):
                 commands.append(
                     self.make_command_from_schema(
@@ -209,7 +219,9 @@ class CLI:
 
                 if isinstance(field.metadata.get("cli"), click.Parameter):
                     param = field.metadata["cli"]
+
                 else:
+
                     param = make_param_from_field(
                         field, user_specified, default=default
                     )
@@ -263,6 +275,7 @@ class CLI:
             command = self.make_command_from_schema(schema, path=(name,))
 
             def schema_load(*a, **kw):
+
                 try:
                     return schema.load(*a, **kw)
                 except marshmallow.exceptions.ValidationError as e:
