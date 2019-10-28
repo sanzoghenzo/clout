@@ -110,7 +110,7 @@ Define some dataclasses and convert them into a command-line interface.
 
 .. code-block:: bash
 
-    $ myapp config --dry-run db --host example.com --port 9999
+    $ myapp --dry-run db --host example.com --port 9999
     Config(db=DB(host='example.com', port=9999), dry_run=True)
 
 

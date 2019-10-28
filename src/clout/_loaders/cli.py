@@ -288,7 +288,9 @@ class CLI:
         command = self.get_command(typ, default, metadata, args)
 
         parser = parsing.Parser(command, callback=command.callback, use_defaults=True)
-        cli_args = (TOP_LEVEL_NAME,) + tuple(args or self.args or sys.argv[1:])
+        cli_args = (TOP_LEVEL_NAME, _util.dasherize(typ.__name__)) + tuple(
+            args or self.args or sys.argv[2:]
+        )
 
         try:
             result = parser.parse_args(cli_args)
@@ -387,7 +389,7 @@ class Command(click.Command):
     def main(self, **kwargs):
         """Run the command and exit the program afterwards.
 
-        Upcalls directly to :meth:`click.Command.main()`.
+        Upcalls directly to :meth:`click.MultiCommand.main()`.
         """
         return super().main(**kwargs)
 

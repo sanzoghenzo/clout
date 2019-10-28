@@ -6,9 +6,7 @@ import sys
 def test_long_example():
     """Build and run a non-standalone command using click."""
     args = [
-        "run",
         "config",
-        "--dry-run",
         "--debug",
         "user",
         "--name",
@@ -37,7 +35,7 @@ def test_long_example():
 
 def test_short_example():
     """Build and run a short command using click."""
-    args = ["config", "--dry-run", "db", "--host", "example.com", "--port", "9999"]
+    args = ["--dry-run", "db", "--host", "example.com", "--port", "9999"]
     proc = subprocess.run(
         [sys.executable, "docs/short.py"] + args, capture_output=True, check=False
     )
@@ -51,7 +49,7 @@ def test_short_example():
 
 def test_show_missing_args():
     """Show help for missing args."""
-    args = ["config", "--dry-run", "db"]
+    args = ["--dry-run", "db"]
     proc = subprocess.run(
         [sys.executable, "docs/short.py"] + args, capture_output=True, check=False
     )
@@ -63,7 +61,7 @@ def test_show_missing_args():
 
 def test_show_missing_data_args():
     """When validation fails for missing data, explain the problem to the user."""
-    args = ["config", "--dry-run", "db", "--port", "3"]
+    args = ["--dry-run", "db", "--port", "3"]
     proc = subprocess.run(
         [sys.executable, "docs/short.py"] + args, capture_output=True, check=False
     )

@@ -56,7 +56,7 @@ CONTEXT_SETTINGS = dict(default_map=clout.DeepChainMap(ENVVAR_DATA, CONFIG_FILE_
 # Define the CLI.
 commands = [
     clout.Command(
-        name="run",
+        name="config",
         type=Config,
         context_settings=CONTEXT_SETTINGS,
         help="Run the app with given configuration object.",
