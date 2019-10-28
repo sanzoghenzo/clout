@@ -22,6 +22,7 @@ from . import parsing
 NO_DEFAULT = "__NO_DEFAULT__"
 TOP_LEVEL_NAME = "top_level_name"
 NoneType = type(None)
+Dataclass = t.NewType("Dataclass", type)
 
 
 def is_python_syntax(s: str) -> bool:
@@ -382,3 +383,17 @@ class Command(click.Command):
     def build(self):
         """Return an instance of `self.type`, built from the command line arguments."""
         return self.main(standalone_mode=False)
+
+
+def command(type: Dataclass, **kwargs):
+    """A decorator that replaces the decorated function with a :class:`clout.Command`.
+
+    The with `callback` attribute is set to the decorated function. Compare to
+    :func:`click.command()`.
+
+    """
+
+    def decorator(callback):
+        return Command(type, callback=callback, **kwargs)
+
+    return decorator
