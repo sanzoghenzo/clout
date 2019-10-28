@@ -343,13 +343,14 @@ class Command(click.Command):
     def __init__(
         self,
         type,
+        *args,
         name=None,
         app_name=None,
         callback=lambda x: x,
         params=None,
         context_settings=None,
         epilog=None,
-        **kw,
+        **kwargs,
     ):
         if not (attr.has(type) or dataclasses.is_dataclass(type)):
             raise TypeError(f"Need a dataclass, got {type} of type {type.__class__}")
@@ -362,8 +363,8 @@ class Command(click.Command):
         context_settings["ignore_unknown_options"] = True
         super().__init__(
             name=name,
-            *a,
-            **kw,
+            *args,
+            **kwargs,
             add_help_option=False,
             epilog=epilog,
             context_settings=context_settings,
