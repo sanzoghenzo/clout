@@ -24,6 +24,7 @@ class DB:
 class Config:
     db: DB
     debug: bool
+    dry_run: bool
     user: User
     priority: float = attr.ib(
         default=0,
@@ -34,7 +35,6 @@ class Config:
         },
     )
     logging: bool = True
-    dry_run: bool = False
 
 
 APP_NAME = "myapp"
@@ -63,8 +63,9 @@ commands = [
     )
 ]
 cli = click.Group(commands={c.name: c for c in commands})
-
+cli = commands[0]
 
 if __name__ == "__main__":
     # Run the CLI.
+
     print(cli.main(standalone_mode=False))

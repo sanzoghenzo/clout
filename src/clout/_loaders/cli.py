@@ -137,10 +137,11 @@ def _(field: marshmallow.fields.Boolean, data, default) -> Option:
     if data:
         return Option(**data, default=default)
 
+    field_name = _util.dasherize(field.name)
     return Option(
-        [_util.dasherize(f"--{field.name}/--no-{field.name}")],
+        [f"--{field_name}/--no-{field_name}"],
         default=default,
-        required=field.missing == marshmallow.missing,
+        required=field.missing == marshmallow.missing == field.default,
         is_flag=True,
         show_default=True,
     )
@@ -180,9 +181,7 @@ def get_default(field, path, default_map):
 
     try:
         value = extract(default_map, path[1:])
-        import q
-
-        q(default_map, path)
+        return value
     except KeyError:
         return field.default
 
@@ -325,6 +324,7 @@ class CLI:
             result = parser.parse_args(e.found + ["--help"])
 
         [value] = result.values()
+        print(value)
         return value
 
     def build(
