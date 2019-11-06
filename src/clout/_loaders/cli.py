@@ -137,10 +137,11 @@ def _(field: marshmallow.fields.Boolean, data, default) -> Option:
     if data:
         return Option(**data, default=default)
 
+    field_name = _util.dasherize(field.name)
     return Option(
-        [_util.dasherize(f"--{field.name}/--no-{field.name}")],
+        [f"--{field_name}/--no-{field_name}"],
         default=default,
-        required=field.missing == marshmallow.missing,
+        required=field.missing == marshmallow.missing == field.default,
         is_flag=True,
         show_default=True,
     )
@@ -171,9 +172,16 @@ def extract(mapping, path):
 
 
 def get_default(field, path, default_map):
+    # XXX The envvar logic should be somewhere else.
+    envvar = field.metadata.get("clout", {}).get("cli", {}).get("envvar")
+    if envvar is not None:
+        value = os.environ.get(envvar)
+        if value is not None:
+            return value
 
     try:
-        return extract(default_map, path[1:])
+        value = extract(default_map, path[1:])
+        return value
     except KeyError:
         return field.default
 
@@ -191,8 +199,9 @@ class CLI:
     ) -> click.BaseCommand:
         params = []
         commands = []
-        # import pudb; pudb.set_trace()
+
         for field in schema.fields.values():
+
             if isinstance(field, marshmallow.fields.Nested):
                 commands.append(
                     self.make_command_from_schema(
@@ -209,7 +218,9 @@ class CLI:
 
                 if isinstance(field.metadata.get("cli"), click.Parameter):
                     param = field.metadata["cli"]
+
                 else:
+
                     param = make_param_from_field(
                         field, user_specified, default=default
                     )
@@ -312,6 +323,7 @@ class CLI:
             result = parser.parse_args(e.found + ["--help"])
 
         [value] = result.values()
+
         return value
 
     def build(

@@ -17,6 +17,10 @@ Using :meth:`clout.Command.main()`, the program will exit immediately afterwards
 .. literalinclude:: ../examples/decorator.py
     :language: python
 
+.. code-block:: bash
+
+    $ EXAMPLE_NAME=Alice python examples/decorator.py --age 21
+    Hello, Alice!
 
 
 A callback
@@ -27,6 +31,7 @@ pass the `callback=` argument.
 
 .. literalinclude:: ../examples/callback.py
     :language: python
+
 
 
 Extended example
@@ -53,7 +58,7 @@ Set an environment variable and run the app.
 
 .. code-block:: bash
 
-    $ MYAPP_CONFIG_PRIORITY=7 minicli run config --debug  user --name Alice db --host example.com --port 9999 user --name Bob
+    % MYAPP_CONFIG_PRIORITY=7 minicli run config --debug  user --name Alice db --host example.com --port 9999 user --name Bob
     Config(db=DB(host='example.com', port=9999, user=User(name='Bob')), debug=True, user=User(name='Alice'), priority=7.0, logging=True, dry_run=True)
 
 

@@ -1,6 +1,7 @@
 import collections
 import functools
 import math
+import os
 import shlex
 import subprocess
 import sys
@@ -356,7 +357,8 @@ class Parser:
 
     def parse_string(self, s):
         grammar = build_grammar(self.group)
-
+        if int(os.environ.get("CLI_SHOW_GRAMMAR", 0)):
+            print(grammar)
         parser = lark.Lark(grammar, parser="earley", ambiguity="explicit")
         try:
             tree = parser.parse(s)

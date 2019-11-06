@@ -1,18 +1,20 @@
 import attr
+import click
 
 import clout
 
 
 @attr.dataclass
 class Person:
-    name: str = attr.ib(metadata={"clout": {"cli": dict(envvar="EXAMPLE_NAME")}})
-    age: int
+    name: str
+    tall: bool
 
 
-@clout.command(Person)
 def greet(person):
     print(f"Hello, {person.name}!")
 
 
+cli = clout.Command(Person, callback=greet)
+
 if __name__ == "__main__":
-    print(greet.main())
+    cli.main()

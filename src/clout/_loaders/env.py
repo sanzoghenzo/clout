@@ -48,6 +48,7 @@ class Env:
         metadata = metadata or {}
 
         schema = desert.schema_class(typ)()
+
         path_to_field = self.make_path_to_field(schema, path=())
 
         d = {}
