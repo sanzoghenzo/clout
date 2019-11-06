@@ -137,7 +137,7 @@ def _(grp: CountingGroup):
 
 def build_grammar(grp):
     grammar = to_lark(grp)
-    grammar += "?value : /\S+/\n"
+    grammar += "?value : /\\S+/\n"
     grammar += f"?start : {name_rule(grp)}\n"
     grammar += "%import common.CNAME\n"
     grammar += "%import common.WS -> _WHITE\n"
