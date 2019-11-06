@@ -274,7 +274,6 @@ class CLI:
             command = self.make_command_from_schema(schema, path=(name,))
 
             def schema_load(*a, **kw):
-
                 try:
                     return schema.load(*a, **kw)
                 except marshmallow.exceptions.ValidationError as e:
@@ -324,7 +323,7 @@ class CLI:
             result = parser.parse_args(e.found + ["--help"])
 
         [value] = result.values()
-        print(value)
+
         return value
 
     def build(
