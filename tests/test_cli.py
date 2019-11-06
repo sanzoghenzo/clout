@@ -20,7 +20,7 @@ def test_long_example():
         "Bob",
     ]
     proc = subprocess.run(
-        [sys.executable, "docs/long.py"] + args,
+        [sys.executable, "examples/long.py"] + args,
         capture_output=True,
         check=False,
         env=dict(**{"MYAPP_PRIORITY": "2"}, **os.environ),
