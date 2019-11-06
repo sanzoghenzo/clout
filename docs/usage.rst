@@ -27,7 +27,7 @@ A callback
 -----------------
 
 If you don't want to use a decorator, you can use :class:`clout.Command()` directly, and
-pass the `callback=` argument.
+pass the ``callback=`` argument.
 
 .. literalinclude:: ../examples/callback.py
     :language: python
