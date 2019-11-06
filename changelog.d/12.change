@@ -1,0 +1,1 @@
+``name: str = attr.ib(metadata={"clout": {"cli": dict(envvar="EXAMPLE_NAME")}})`` sets the default value of the ``EXAMPLE_NAME`` environment variable for the ``name`` field.
