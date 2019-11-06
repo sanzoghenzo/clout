@@ -28,7 +28,7 @@ def test_long_example():
     assert proc.returncode == 0, proc.stderr.decode()
 
     output = proc.stdout.decode()
-    expected = "Config(db=DB(host='example.com', port=9999, user=User(name='Bob')), debug=True, user=User(name='Alice'), priority=2.0, logging=True, dry_run=True)\n"
+    expected = "Config(db=DB(host='example.com', port=9999, user=User(name='Bob')), debug=True, dry_run=True, user=User(name='Alice'), priority=2.0, logging=True)\n"
     assert output == expected
 
 
