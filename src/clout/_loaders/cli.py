@@ -138,12 +138,13 @@ def _(field: marshmallow.fields.Boolean, data, default) -> Option:
         return Option(**data, default=default)
 
     field_name = _util.dasherize(field.name)
+    required = field.missing == marshmallow.missing == field.default == default
     return Option(
         [f"--{field_name}/--no-{field_name}"],
         default=default,
-        required=field.missing == marshmallow.missing == field.default,
+        required=required,
         is_flag=True,
-        show_default=True,
+        show_default=not required,
     )
 
 
