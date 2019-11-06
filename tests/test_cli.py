@@ -67,3 +67,15 @@ def test_show_missing_data_args():
     assert proc.returncode == 1, proc.stderr.decode()
 
     assert "Missing data for required field" in proc.stderr.decode()
+
+
+def test_envvar():
+    """``envvar=`` metadata argument defines the environment variable for a field."""
+    args = ["--age", "21"]
+    proc = subprocess.run(
+        [sys.executable, "examples/decorator.py"] + args,
+        check=True,
+        capture_output=True,
+        env={"EXAMPLE_NAME": "Alice"},
+    )
+    assert proc.stdout.decode() == "Hello, Alice!\n"
