@@ -39,9 +39,11 @@ To set up `python-clout` for local development:
 
 1. Fork `python-clout <https://github.com/python-clout/clout>`_
    (look for the "Fork" button).
-2. Clone your fork locally::
+2. Clone your fork locally
 
-    git clone git@github.com:your_name_here/python-clout.git
+   .. code-block:: bash
+
+        git clone git@github.com:your_name_here/python-clout.git
 
 3. Create a branch for local development::
 

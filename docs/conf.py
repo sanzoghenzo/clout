@@ -17,6 +17,7 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "sphinx.ext.intersphinx",
+    "clout.docs.codelink",
 ]
 if os.getenv("SPELLCHECK"):
     extensions += ("sphinxcontrib.spelling",)

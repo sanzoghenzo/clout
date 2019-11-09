@@ -1,6 +1,13 @@
 clout package
 =============
 
+Subpackages
+-----------
+
+.. toctree::
+
+   clout.docs
+
 Submodules
 ----------
 
