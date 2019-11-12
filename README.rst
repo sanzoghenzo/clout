@@ -27,7 +27,7 @@ Clout: Command-Line Object Utility Tool
     :alt: Documentation Status
 
 
-.. |travis| image:: https://img.shields.io/travis/com/python-clout/clout
+.. |travis| image:: https://img.shields.io/travis/com/python-clout/clout/master
     :alt: Travis-CI Build Status
     :target: https://travis-ci.com/python-clout/clout
 
