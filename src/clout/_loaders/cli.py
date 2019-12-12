@@ -300,9 +300,7 @@ class CLI:
         command = self.get_command(typ, default, metadata, args)
 
         parser = parsing.Parser(command, callback=command.callback, use_defaults=True)
-        cli_args = (TOP_LEVEL_NAME, _util.dasherize(typ.__name__)) + tuple(
-            args or self.args or sys.argv[2:]
-        )
+        cli_args = (TOP_LEVEL_NAME,) + tuple(args or self.args or sys.argv[2:])
 
         try:
             result = parser.parse_args(cli_args)
@@ -389,10 +387,9 @@ class Command(click.Command):
             click.Argument(["args"], type=click.UNPROCESSED, nargs=-1)
         ]
         self.callback = lambda args: callback(
-            CLI(
-                app_name=app_name or _util.dasherize(type.__name__),
-                context_settings=context_settings,
-            ).build(type, args=args)
+            CLI(app_name=app_name or name, context_settings=context_settings).build(
+                type, args=args
+            )
         )
 
     def build(self):

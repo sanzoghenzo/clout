@@ -229,7 +229,7 @@ class Transformer(lark.Transformer):
 
             if param.name == "--help":
                 print(command.get_help(click.Context(command)))
-                sys.exit()
+                sys.exit(0)
             if isinstance(param, click.Parameter):
                 value = str(value)
             if param.multiple or param.nargs != 1:
@@ -308,7 +308,9 @@ class RemoveInvalidBranches(lark.Transformer):
             raise AmbiguousArgs(data)
 
         # Pick one.
-        return trees[-1]
+        # Picking the first seems to result in help being deeper which is probably good.
+        # TODO ensure help is deeper.
+        return trees[0]
 
 
 def has_help(tree):
@@ -357,12 +359,17 @@ class Parser:
 
     def parse_string(self, s):
         grammar = build_grammar(self.group)
+
         if int(os.environ.get("CLI_SHOW_GRAMMAR", 0)):
             print(grammar)
         parser = lark.Lark(grammar, parser="earley", ambiguity="explicit")
+
         try:
+
             tree = parser.parse(s)
+
         except lark.exceptions.ParseError as e:
+
             found = find_missing_input(parser, s)
             raise clout.exceptions.MissingInput(self.group, s, found) from e
 
