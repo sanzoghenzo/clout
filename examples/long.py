@@ -63,7 +63,7 @@ commands = [
     )
 ]
 cli = click.Group(commands={c.name: c for c in commands})
-cli = commands[0]
+
 
 if __name__ == "__main__":
     # Run the CLI.
