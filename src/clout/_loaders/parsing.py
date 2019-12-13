@@ -308,7 +308,9 @@ class RemoveInvalidBranches(lark.Transformer):
             raise AmbiguousArgs(data)
 
         # Pick one.
-        return trees[-1]
+        # Picking the first seems to result in help being deeper which is probably good.
+        # TODO ensure help is deeper.
+        return trees[0]
 
 
 def has_help(tree):

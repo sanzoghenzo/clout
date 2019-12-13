@@ -6,6 +6,7 @@ import sys
 def test_long_example():
     """Build and run a non-standalone command using click."""
     args = [
+        "config",
         "--debug",
         "user",
         "--name",
