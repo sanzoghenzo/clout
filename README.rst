@@ -57,7 +57,7 @@ Clout: Command-Line Object Utility Tool
 
 .. |github| image:: https://img.shields.io/github/last-commit/python-clout/clout
      :alt: Last commit
-     :target: https://img.shields.io/github/last-commit/python-clout/clout
+     :target: https://github.com/python-clout/clout
 
 .. end-badges
 
