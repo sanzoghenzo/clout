@@ -70,6 +70,17 @@ def test_show_missing_data_args():
     assert "Missing data for required field" in proc.stderr.decode()
 
 
+def test_no_args():
+    """When no arguments are provided, explain the problem to the user."""
+    proc = subprocess.run(
+        [sys.executable, "docs/short.py"], capture_output=True, check=False, timeout=5
+    )
+    assert proc.returncode == 1, proc.stderr.decode()
+
+    output = proc.stdout.decode()
+    assert output.startswith("Usage:")
+
+
 def test_envvar():
     """``envvar=`` metadata argument defines the environment variable for a field."""
     args = ["--age", "21"]

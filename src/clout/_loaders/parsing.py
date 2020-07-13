@@ -336,6 +336,8 @@ def find_missing_input(parser, s: str) -> t.Optional[t.List[str]]:
         return None
 
     while True:
+        if not words:
+            return None
         try:
             parser.parse(subprocess.list2cmdline(words[:-1]))
         except lark.exceptions.ParseError:
@@ -364,9 +366,12 @@ class Parser:
         parser = lark.Lark(grammar, parser="earley", ambiguity="explicit")
         try:
             tree = parser.parse(s)
+
         except lark.exceptions.ParseError as e:
             found = find_missing_input(parser, s)
-            raise clout.exceptions.MissingInput(self.group, s, found) from e
+            if found:
+                raise clout.exceptions.MissingInput(self.group, s, found) from e
+            raise lark.exceptions.ParseError()
 
         try:
             tree = RemoveInvalidBranches(group=self.group).transform(tree)
